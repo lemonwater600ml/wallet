@@ -8,6 +8,30 @@ class BluetoothScreen extends StatefulWidget {
 }
 
 class _BluetoothScreenState extends State<BluetoothScreen> {
+  List<String> discoveredDevices = [];
+  List<String> pairedDevices = [];
+
+  List<String> getDiscoveredDevices () {
+    return this.discoveredDevices;
+  }
+
+  List<String> getPairedDevices () {
+    return this.pairedDevices;
+  }
+
+  void createFingerPrint() {
+    // null interface for creating finger print
+  }
+
+  void resetFingerPrint() {
+    // null interface for reset finger print
+  }
+
+  void verifyFingerPring() {
+    // null interface for verify finger print
+  }
+
+  
   void toMainPage(BuildContext context) {
     Navigator.of(context).pushNamed(
       TabsMainScreen.routeName,

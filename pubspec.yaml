@@ -20,9 +20,12 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bluetooth_serial: ^0.2.2
+  shared_preferences: "<newest version>"
+  path_provider: ^0.4.1
   qr_flutter: ^3.1.0
   qrscan: ^0.2.17
   flutter_ble_lib: 
+    
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

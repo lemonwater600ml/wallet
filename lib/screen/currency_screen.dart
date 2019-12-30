@@ -59,7 +59,7 @@ class CurrencyScreen extends StatelessWidget {
                         Icon(Icons.monetization_on, size: 50,),
                         Text('Total amount in the wallet '),
                         Text(
-                            '~=\$ ${fiatValueSum(selectedWallet.currenciesCoinNumber, exchangeRate)} USD',),
+                            '~=\$ ${fiatValueSum(selectedWallet.coinsNumber, exchangeRate)} USD',),
                         
                       ],
                     )),
@@ -91,7 +91,7 @@ class CurrencyScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: <Widget>[
                                 Text(
-                                  '+ ${receivedRecords[idx]['amount'].toString()} ${selectedWallet.mainCurrency}',
+                                  '+ ${receivedRecords[idx]['amount'].toString()} ${selectedWallet.type}',
                                 ),
                                 Text(receivedRecords[idx]['time'].toString()),
                                 
@@ -116,7 +116,7 @@ class CurrencyScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: <Widget>[
                                 Text(
-                                  '- ${sendRecords[idx]['amount'].toString()} ${selectedWallet.mainCurrency}',
+                                  '- ${sendRecords[idx]['amount'].toString()} ${selectedWallet.type}',
                                 ),
                                 Text(sendRecords[idx]['time'].toString()),
                                 

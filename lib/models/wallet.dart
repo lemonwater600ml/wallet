@@ -3,16 +3,16 @@ import 'package:flutter/foundation.dart';
 
 class Wallet {
  final String id;
- final String mainCurrency;
- final String mainAddress;
- final List<Map<String, Object>> currenciesCoinNumber;
+ final String type;
+ final String address;
+ final List<Map<String, Object>> coinsNumber;
  
 
   const Wallet({
     @required this.id,
-    @required this.mainCurrency,
-    @required this.mainAddress,
-    @required this.currenciesCoinNumber,
+    @required this.type,
+    @required this.address,
+    @required this.coinsNumber,
     
   });
   

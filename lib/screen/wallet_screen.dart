@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:wallet/screen/currency_screen.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 // import 'package:wallet/widgets/wallet_currency.dart';
+import '../models/wallet.dart';
 import '../dummy_data.dart';
 
 // To do
@@ -13,6 +16,16 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
+  List<Wallet> wallets = DUMMY_WALLETS;
+  List<Wallet> getWallets () {
+    return this.wallets;
+  }
+  void createWallet (String text) async {
+  final directory = await getApplicationDocumentsDirectory();
+  final file = File('${directory.path}/data.dart');
+  await file.writeAsString(text);
+}
+
   void selectCurrency(BuildContext context, num idx) {
     Navigator.of(context).pushNamed(CurrencyScreen.routeName, arguments: idx);
   }
@@ -22,7 +35,7 @@ class _WalletScreenState extends State<WalletScreen> {
     final exchangeRate = EXCHANGERATES;
     final selectedWalletIdx = 'eth1';
     final selectedWallet =
-        DUMMY_WALLETS.firstWhere((wallet) => wallet.id == selectedWalletIdx);
+        wallets.firstWhere((wallet) => wallet.id == selectedWalletIdx);
     final fiatMoneyValue = 0;
 
     String fiatValueSum(currenciesCoinNumber, exchangeRate) {
@@ -62,16 +75,16 @@ class _WalletScreenState extends State<WalletScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('${selectedWallet.mainCurrency}-Wallet'),
+                  Text('${selectedWallet.type}-Wallet'),
                   Icon(Icons.more_horiz)
                 ],
               ),
-              Text(selectedWallet.mainAddress),
+              Text(selectedWallet.address),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   Text(
-                      '\$ ${fiatValueSum(selectedWallet.currenciesCoinNumber, exchangeRate)}'),
+                      '\$ ${fiatValueSum(selectedWallet.coinsNumber, exchangeRate)}'),
                 ],
               ),
             ],
@@ -104,25 +117,27 @@ class _WalletScreenState extends State<WalletScreen> {
                   child: ListTile(
                     leading: Icon(Icons.attach_money),
                     title: Text(
-                        selectedWallet.currenciesCoinNumber[idx]['currency']),
+                        selectedWallet.coinsNumber[idx]['currency']),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        Text(selectedWallet.currenciesCoinNumber[idx]
+                        Text(selectedWallet.coinsNumber[idx]
                                 ['coinNumber']
                             .toString()),
                         // Text(
                         //     '\$ ${double.parse(selectedWallet.currenciesCoinNumber[idx]['coinNumber'].toString())}'),
                         Text(
-                            '\$ ${_calculateFiatValue(selectedWallet.currenciesCoinNumber[idx], exchangeRate)}'),
+                            '\$ ${_calculateFiatValue(selectedWallet.coinsNumber[idx], exchangeRate)}'),
                       ],
                     ),
                   ),
                 );
               },
-              itemCount: selectedWallet.currenciesCoinNumber.length),
-        )
+              itemCount: selectedWallet.coinsNumber.length),
+        ),
+        // RaisedButton(onPressed: () => createWallet('testWriting'),
+        // child: Text('Write string!'),)
       ],
     );
   }

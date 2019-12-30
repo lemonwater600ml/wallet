@@ -78,7 +78,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
               child: ListTile(
                 onTap: () {},
                 leading: Icon(Icons.lock_outline),
-                title: Text(wallets[idx].mainCurrency),
+                title: Text(wallets[idx].type),
                 trailing: Text(wallets[idx].id),
               ),
             );

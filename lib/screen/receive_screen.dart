@@ -28,14 +28,14 @@ class ReceiveScreen extends StatelessWidget {
               child: Center(
                 child: QrImage(
                   backgroundColor: Colors.white,
-                  data: selectedWallet.mainAddress,
+                  data: selectedWallet.address,
                   version: QrVersions.auto,
                   size: 200,
                   gapless: false,
                 ),
               ),
             ),
-            Center(child: Text('Address: ${selectedWallet.mainAddress}')),
+            Center(child: Text('Address: ${selectedWallet.address}')),
           ],
         ),
       ),

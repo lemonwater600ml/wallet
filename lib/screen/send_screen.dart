@@ -58,7 +58,7 @@ class _SendScreenState extends State<SendScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text('${selectedWallet.mainCurrency} amount'),
+                          Text('${selectedWallet.type} amount'),
                           TextFormField(
                             decoration: InputDecoration.collapsed(
                                 hintText: 'Please input amount'),

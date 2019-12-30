@@ -1,12 +1,11 @@
 import './models/wallet.dart';
-import './models/exchange_rate.dart';
 
 const DUMMY_WALLETS = const [
   Wallet(
     id: 'eth1',
-    mainCurrency: 'ETH',
-    mainAddress: '0xTe34Gder1234567890',
-    currenciesCoinNumber: [
+    type: 'ETH',
+    address: '0xTe34Gder1234567890',
+    coinsNumber: [
       {
         'currency': 'ETH',
         'coinNumber': 16.7,
@@ -16,7 +15,7 @@ const DUMMY_WALLETS = const [
         'coinNumber': 5.0,
       }
     ],
-  ), // *** should not be hardcorded
+  ), 
   // Wallet(
   //   id: 'btc1',
   //   mainCurrency: 'BTC',
@@ -38,7 +37,8 @@ const EXCHANGERATES = {
 final TRANSACTIONS_RCV = [
   {
     'id': "000001",
-    'type': 'Received',
+    'type': 'ETH',
+    'tranType': 'Received',
     'amount': '3',
     'from': '0xTe34Gder1234567890',
     'to': '000ethreceive000',
@@ -49,7 +49,8 @@ final TRANSACTIONS_RCV = [
   },
   {
     'id': "000002",
-    'type': 'Received',
+    'type': 'ETH',
+    'tranType': 'Received',
     'amount': "5",
     'from': '0xTe34Gder1234567890',
     'to': '000ethreceive000',
@@ -60,7 +61,8 @@ final TRANSACTIONS_RCV = [
   },
   {
     'id': "000003",
-    'type': 'Received',
+    'type': 'ETH',
+    'tranType': 'Received',
     'amount': "7",
     'from': '0xTe34Gder1234567890',
     'to': '000ethreceive003',
@@ -71,7 +73,8 @@ final TRANSACTIONS_RCV = [
   },
   {
     'id': "000004",
-    'type': 'Received',
+    'type': 'ETH',
+    'tranType': 'Received',
     'amount': "2",
     'from': '0xTe34Gder1234567890',
     'to': '000ethreceive004',
@@ -85,7 +88,8 @@ final TRANSACTIONS_RCV = [
 final TRANSACTIONS_SND = [
   {
     'id': "000001",
-    'type': 'Send',
+    'type': 'ETH',
+    'tranType': 'Send',
     'amount': '0.1',
     'from': '000ethreceive000',
     'to': '0xTe34Gder1234567890',
@@ -96,7 +100,8 @@ final TRANSACTIONS_SND = [
   },
   {
     'id': "000002",
-    'type': 'Send',
+    'type': 'ETH',
+    'tranType': 'Send',
     'amount': "0.2",
     'from': '000ethreceive000',
     'to': '0xTe34Gder1234567890',
