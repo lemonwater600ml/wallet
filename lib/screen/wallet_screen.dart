@@ -36,7 +36,6 @@ class _WalletScreenState extends State<WalletScreen> {
     final selectedWalletIdx = 'eth1';
     final selectedWallet =
         wallets.firstWhere((wallet) => wallet.id == selectedWalletIdx);
-    final fiatMoneyValue = 0;
 
     String fiatValueSum(currenciesCoinNumber, exchangeRate) {
       double sum = 0;
@@ -136,6 +135,7 @@ class _WalletScreenState extends State<WalletScreen> {
               },
               itemCount: selectedWallet.coinsNumber.length),
         ),
+        
         // RaisedButton(onPressed: () => createWallet('testWriting'),
         // child: Text('Write string!'),)
       ],

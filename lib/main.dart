@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import './screen/create_wallet_verify.dart';
+import './screen/create_wallet_screen.dart';
+import './screen/blue_verify_screen.dart';
 
-import './screen/bluetooth_screen.dart';
+import './screen/blue_screen.dart';
 import './screen/send_screen.dart';
 import './screen/currency_screen.dart';
 import './screen/receive_screen.dart';
-
 import './screen/tabs_main_screen.dart';
 
 void main() => runApp(WalletApp());
@@ -14,18 +16,24 @@ class WalletApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Wallet',
-      theme: ThemeData.dark(),
+      theme: ThemeData(
+        primaryColor: Colors.black,
+      ),
+      darkTheme: ThemeData.dark(),
+
       // initialRoute: '/bluetooth-screen',
       routes: {
-        '/': (ctx) => BluetoothScreen(),
+        '/': (ctx) => FindDevicesScreen(),
         // '/': (ctx) => TabsMainScreen(),
         TabsMainScreen.routeName: (ctx) => TabsMainScreen(),
         CurrencyScreen.routeName: (ctx) => CurrencyScreen(),
         ReceiveScreen.routeName: (ctx) => ReceiveScreen(),
         SendScreen.routeName: (ctx) => SendScreen(),
-        
+        BlueVerifyScreen.routeName: (ctx) => BlueVerifyScreen(),
+        CreateWalletScreen.routeName: (ctx) => CreateWalletScreen(),
+        FindDevicesScreen.routeName: (ctx) => FindDevicesScreen(),
+        CreateWalletVarifyScreen.routeName: (ctx) => CreateWalletVarifyScreen(),
       },
-      
     );
   }
 }
