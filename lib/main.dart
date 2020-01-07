@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import './screen/create_wallet_verify.dart';
+import './screen/blue_connected_screen.dart';
+import './screen/create_wallet_check_screen.dart';
 import './screen/create_wallet_screen.dart';
 import './screen/blue_verify_screen.dart';
 
@@ -32,7 +33,9 @@ class WalletApp extends StatelessWidget {
         BlueVerifyScreen.routeName: (ctx) => BlueVerifyScreen(),
         CreateWalletScreen.routeName: (ctx) => CreateWalletScreen(),
         FindDevicesScreen.routeName: (ctx) => FindDevicesScreen(),
-        CreateWalletVarifyScreen.routeName: (ctx) => CreateWalletVarifyScreen(),
+        CreateWalletCheckScreen.routeName: (ctx) => CreateWalletCheckScreen(),
+        BlueConnectedScreen.routeName: (ctx) => BlueConnectedScreen(),
+        
       },
     );
   }

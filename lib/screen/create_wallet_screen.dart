@@ -4,11 +4,38 @@ import 'package:path_provider/path_provider.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitcoin_bip44/bitcoin_bip44.dart' as bip44;
 import 'package:flutter/material.dart';
+import 'package:wallet/screen/create_wallet_check_screen.dart';
 
-class CreateWalletScreen extends StatelessWidget {
+class CreateWalletScreen extends StatefulWidget {
   static const routeName = '/create-wallet';
+
+  @override
+  _CreateWalletScreenState createState() => _CreateWalletScreenState();
+}
+
+class _CreateWalletScreenState extends State<CreateWalletScreen> {
   final _formKey = GlobalKey<FormState>();
-  var mnemonic = bip39.generateMnemonic();
+  var mnemonic;
+  int _methodIdx = 0;
+
+  void _showCreateNewMethod(BuildContext context) {
+    setState(() {
+      _methodIdx = 1;
+      Navigator.of(context).pop();
+    });
+  }
+
+  void _showRecoverMethod(BuildContext context) {
+    setState(() {
+      _methodIdx = 2;
+      Navigator.of(context).pop();
+      
+    });
+  }
+
+  void _addNewWalletToDevice(BuildContext context) {
+    // Place holder for writing new wallet into device
+  }
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -41,7 +68,6 @@ class CreateWalletScreen extends StatelessWidget {
     }
   }
 
-  
   @override
   Widget build(BuildContext context) {
     void _recordWalletData(BuildContext context) {
@@ -50,7 +76,7 @@ class CreateWalletScreen extends StatelessWidget {
     }
     // mnemonic = 'seed sock milk update focus rotate barely fade car face mechanic mercy';
 
-    while (bip39.validateMnemonic(mnemonic) == false) {
+    while ((mnemonic == null ) || (bip39.validateMnemonic(mnemonic) == false)) {
       mnemonic = bip39.generateMnemonic();
     }
     List<String> listMnemonic = mnemonic.split(" ");
@@ -64,9 +90,39 @@ class CreateWalletScreen extends StatelessWidget {
       );
     }
 
+    void _toCreateWalletVarifyScreen(BuildContext context) {
+      Navigator.of(context).pushNamed(
+        CreateWalletCheckScreen.routeName,
+      );
+    }
+
+    void _showWalletSelectDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) => AlertDialog(
+          content: Column(
+            children: <Widget>[
+              RadioListTile(title: Text('Create new wallet'),value: 'create new wallet', onChanged: (_)=>_showCreateNewMethod(context),),
+            RadioListTile(title: Text('Recover wallet'),value: 'recover wallet', onChanged: (_)=>_showRecoverMethod(context),),
+            ],
+          ),
+          actions: <Widget>[
+            
+            FlatButton(
+              onPressed: ()  {Navigator.of(context).pop();},
+              child: Text('OK'),
+            )
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
         bottomNavigationBar: RaisedButton(
-          child: Text('Create wallet'),
+          child: FlatButton(
+              onPressed: () => _toCreateWalletVarifyScreen(context),
+              child: Text('Next')),
           onPressed: () => _recordWalletData(context),
         ),
         appBar: AppBar(
@@ -81,32 +137,49 @@ class CreateWalletScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   walletInfoField('Wallet name'),
-                  walletInfoField('Create new wallet'),
-                  walletInfoField('Language'),
-                  walletInfoField('Number'),
-                  Padding(
+                  TextFormField(
+                    onTap: () => _showWalletSelectDialog(context),
+                    decoration:
+                        InputDecoration(hintText: 'Select initializing method'),
+                  ),
+                  // walletInfoField(),
+                  
+                  if (_methodIdx == 1)  // Create page
+                  Column(
+                    children: <Widget>[Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
                         'Please write down all mnemonic phrases in sequential order'),
                   ),
-                  Container(
-                    child: ListView.builder(
-                      itemBuilder: (ctx, idx) {
-                        return Padding(
-                            padding: EdgeInsets.all(2),
-                            child: Text(
-                                '${(idx + 1).toString()}. ${listMnemonic[idx]}'));
+                      Container(
+                        child: ListView.builder(
+                          itemBuilder: (ctx, idx) {
+                            return Padding(
+                                padding: EdgeInsets.all(2),
+                                child: Text(
+                                    '${(idx + 1).toString()}. ${listMnemonic[idx]}'));
 
-                        // return ListTile(
-                        //   leading: Text((idx + 1).toString()),
-                        //   title: Text(listMnemonic[idx]),
-                        //   contentPadding: EdgeInsets.all(0),
-                        // );
-                      },
-                      itemCount: listMnemonic.length,
-                    ),
+                            // return ListTile(
+                            //   leading: Text((idx + 1).toString()),
+                            //   title: Text(listMnemonic[idx]),
+                            //   contentPadding: EdgeInsets.all(0),
+                            // );
+                          },
+                          itemCount: listMnemonic.length,
+                        ),
+                        height: 250,
+                      ),
+                    ],
+                  ) 
+                  else if (_methodIdx == 2) Container(
                     height: 250,
+                    child: TextFormField(decoration: InputDecoration(hintText: 'Please type in your mnemonic'),),
                   )
+                  ,
+                  // RaisedButton(
+                  //   onPressed: () => _addNewWalletToDevice(context),
+                  //   child: Text('Create'),
+                  // )
                 ],
               ),
             ),

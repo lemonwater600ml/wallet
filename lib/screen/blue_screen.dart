@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:bip39/bip39.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import './blue_connected_screen.dart';
 import './blue_verify_screen.dart';
 // import '../widgets/blue_widgets.dart';
 
@@ -71,9 +72,17 @@ class FindDevicesScreen extends StatelessWidget {
     );
   }
 
+  void _toBlueConnectedScreen(BuildContext context) {
+    Navigator.of(context).pushNamed(
+      BlueConnectedScreen.routeName,
+    );
+  }
+
   void _connect(BuildContext context, int idx) {
     // print('Pressed');
     atDevices[idx].device.connect();
+    Navigator.of(context).pushNamed(
+      BlueConnectedScreen.routeName,);
   }
 
   List<ScanResult> getDiscoveredDevices() {
@@ -84,17 +93,7 @@ class FindDevicesScreen extends StatelessWidget {
     return this.connectedAtDevices;
   }
 
-  void createFingerPrint() {
-    // null interface for creating finger print
-  }
 
-  void resetFingerPrint() {
-    // null interface for reset finger print
-  }
-
-  void verifyFingerPring() {
-    // null interface for verify finger print
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,10 +102,10 @@ class FindDevicesScreen extends StatelessWidget {
       bottomNavigationBar: RaisedButton(
         color: Colors.grey,
         child: Text(
-          'To Verify page',
+          'To connect page (test)',
           style: TextStyle(color: Colors.white),
         ),
-        onPressed: () => _toBlueVerifyScreen(context),
+        onPressed: () => _toBlueConnectedScreen(context),
       ),
       appBar: AppBar(
         title: Text('Find Devices'),
@@ -119,53 +118,53 @@ class FindDevicesScreen extends StatelessWidget {
           child: Column(
             children: <Widget>[
               
-              StreamBuilder<List<BluetoothDevice>>(
-                stream: Stream.periodic(Duration(seconds: 2))
-                    .asyncMap((_) => FlutterBlue.instance.connectedDevices),
-                initialData: [],
-                builder: (c, snapshot) => Column(
-                  children: snapshot.data?.map((d) => Container(
-                            decoration: BoxDecoration(color: Colors.black),
-                            child: ListTile(
-                              title: Text(
-                                d.name,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              subtitle: Text(
-                                d.id.toString(),
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              trailing: StreamBuilder<BluetoothDeviceState>(
-                                stream: d.state,
-                                initialData: BluetoothDeviceState.disconnected,
-                                builder: (c, snapshotstate) {
-                                  if (snapshotstate.data ==
-                                      BluetoothDeviceState.connected) {
-                                    connectedAtDevices = snapshot.data;
-                                    return RaisedButton(
-                                      color: Colors.grey,
-                                      child: Text(
-                                        'OPEN',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      onPressed: () =>
-                                          _toBlueVerifyScreen(context),
-                                      // onPressed: () => Navigator.of(context)
-                                      //     .push(MaterialPageRoute(
-                                      //         builder: (context) =>
-                                      //             DeviceScreen(device: d))),
-                                    );
-                                  }
-                                  return Text(
-                                    snapshot.data.toString(),
-                                    style: TextStyle(color: Colors.white),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),)?.toList() ?? [],
-                ),
-              ),
+              // StreamBuilder<List<BluetoothDevice>>(
+              //   stream: Stream.periodic(Duration(seconds: 2))
+              //       .asyncMap((_) => FlutterBlue.instance.connectedDevices),
+              //   initialData: [],
+              //   builder: (c, snapshot) => Column(
+              //     children: snapshot.data?.map((d) => Container(
+              //               decoration: BoxDecoration(color: Colors.black),
+              //               child: ListTile(
+              //                 title: Text(
+              //                   d.name,
+              //                   style: TextStyle(color: Colors.white),
+              //                 ),
+              //                 subtitle: Text(
+              //                   d.id.toString(),
+              //                   style: TextStyle(color: Colors.white),
+              //                 ),
+              //                 trailing: StreamBuilder<BluetoothDeviceState>(
+              //                   stream: d.state,
+              //                   initialData: BluetoothDeviceState.disconnected,
+              //                   builder: (c, snapshotstate) {
+              //                     if (snapshotstate.data ==
+              //                         BluetoothDeviceState.connected) {
+              //                       connectedAtDevices = snapshot.data;
+              //                       return RaisedButton(
+              //                         color: Colors.grey,
+              //                         child: Text(
+              //                           'OPEN',
+              //                           style: TextStyle(color: Colors.white),
+              //                         ),
+              //                         onPressed: () =>
+              //                             _toBlueVerifyScreen(context),
+              //                         // onPressed: () => Navigator.of(context)
+              //                         //     .push(MaterialPageRoute(
+              //                         //         builder: (context) =>
+              //                         //             DeviceScreen(device: d))),
+              //                       );
+              //                     }
+              //                     return Text(
+              //                       snapshot.data.toString(),
+              //                       style: TextStyle(color: Colors.white),
+              //                     );
+              //                   },
+              //                 ),
+              //               ),
+              //             ),)?.toList() ?? [],
+              //   ),
+              // ),
               StreamBuilder<List<ScanResult>>(
                   stream: FlutterBlue.instance.scanResults,
                   initialData: [],
