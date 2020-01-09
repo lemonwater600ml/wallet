@@ -34,46 +34,61 @@ class CreateWalletCheckScreen extends StatelessWidget {
     );
   }
 
-  Future<String> get _localPath async {
-  final directory = await getApplicationDocumentsDirectory();
+//   Future<String> get _localPath async {
+//   final directory = await getApplicationDocumentsDirectory();
 
-  return directory.path;
-}
+//   return directory.path;
+// }
 
-Future<File> get _localFile async {
-  final path = await _localPath;
-  return File('$path/../wallets.dart');
-}
+// Future<File> get _localFile async {
+//   final path = await _localPath;
+//   return File('$path/../wallets.dart');
+// }
 
-Future<File> writeCounter(int counter) async {
-  final file = await _localFile;
+// Future<File> writeCounter(int counter) async {
+//   final file = await _localFile;
 
-  // Write the file.
-  return file.writeAsString('$counter');
-}
+//   // Write the file.
+//   return file.writeAsString('$counter');
+// }
 
-Future<int> readCounter() async {
-  try {
-    final file = await _localFile;
+// Future<int> readCounter() async {
+//   try {
+//     final file = await _localFile;
 
-    // Read the file.
-    String contents = await file.readAsString();
+//     // Read the file.
+//     String contents = await file.readAsString();
 
-    return int.parse(contents);
-  } catch (e) {
-    // If encountering an error, return 0.
-    return 0;
-  }
-}
+//     return int.parse(contents);
+//   } catch (e) {
+//     // If encountering an error, return 0.
+//     return 0;
+//   }
+// }
 
   @override
   Widget build(BuildContext context) {
     walletPropertiesMap = ModalRoute.of(context).settings.arguments;
     // walletProperties.mnemonic = '123';
+    print('Data get: ${ModalRoute.of(context).settings.arguments}');
+    
     // test only
-    _mnemonicList = walletPropertiesMap['mnemonicList'];
-
-    // test only
+    _mnemonicList = [
+      '-1',
+      '-2',
+      '-3',
+      '-4',
+      '-5',
+      '-6',
+      '-7',
+      '-8',
+      '-9',
+      '-10',
+      '-11',
+      '-12',
+    ];
+        // test only
+   _mnemonicList = walletPropertiesMap['mnemonicList'];
     return Scaffold(
       appBar: AppBar(
         title: Text('Initialize Wallet'),

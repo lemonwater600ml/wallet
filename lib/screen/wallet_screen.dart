@@ -114,21 +114,14 @@ class _WalletScreenState extends State<WalletScreen> {
               });
             },
             value: dropdownValue,
-            items: <String>[
-              'Bitcoin',
-              'Bitcoin Cash',
-              'Ethereum',
-              'Litecoin',
-              'Dogecoin',
-              'Dash'
-            ].map<DropdownMenuItem<String>>(
-              (String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              },
-            ).toList(),
+              items: coinList.map<DropdownMenuItem<String>>(
+                (String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                },
+              ).toList(),
           ),
           actions: <Widget>[
             FlatButton(

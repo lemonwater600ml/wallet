@@ -31,6 +31,9 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
   String _tempMethod;
   String _method;
 
+  List<String> methodList = ['Please select method', 'Create new wallet','Recovery wallet'];
+  
+
   void _setMethod(BuildContext context, String tempMethod) {
     setState(() {
       _method = _tempMethod;
@@ -69,8 +72,8 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
 
     walletPropertiesMap['walletName'] = this._walletName;
     walletPropertiesMap['method'] = this._method ;
-    walletPropertiesMap['mnemonic'] = this.mnemonicList ;
-    walletPropertiesMap['mnemonicList'] = this.mounted ;
+    walletPropertiesMap['mnemonic'] = this.mnemonic ;
+    walletPropertiesMap['mnemonicList'] = this.mnemonicList ;
     walletPropertiesMap['mnemonicLength'] = this.mnemonicList.length ;
     walletPropertiesMap['seed'] = this.seedHex ;
     walletPropertiesMap['seedHex'] = this.seedHex ;
@@ -84,31 +87,45 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
       context: context,
       barrierDismissible: true,
       builder: (_) => AlertDialog(
-        content: Column(
-          children: <Widget>[
-            RadioListTile<String>(
-              title: Text('Create new wallet'),
-              value: 'Create new wallet',
-              groupValue: _tempMethod,
-              activeColor: Colors.blue,
-              onChanged: (value) {
-                setState(() {
-                  _tempMethod = value;
-                });
+        content: DropdownButton(
+          onChanged: (newValue) {setState(() {
+            _tempMethod = newValue;
+          });},
+          value: _tempMethod,
+          items: methodList.map<DropdownMenuItem<String>>(
+              (String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
               },
-            ),
-            RadioListTile<String>(
-              title: Text('Recovery wallet'),
-              value: 'Recovery wallet',
-              groupValue: _tempMethod,
-              onChanged: (value) {
-                setState(() {
-                  _tempMethod = value;
-                });
-              },
-            ),
-          ],
+            ).toList(),
         ),
+        // content: Column(
+        //   children: <Widget>[
+        //     RadioListTile<String>(
+        //       title: Text('Create new wallet'),
+        //       value: 'Create new wallet',
+        //       groupValue: _tempMethod,
+        //       activeColor: Colors.blue,
+        //       onChanged: (value) {
+        //         setState(() {
+        //           _tempMethod = value;
+        //         });
+        //       },
+        //     ),
+        //     RadioListTile<String>(
+        //       title: Text('Recovery wallet'),
+        //       value: 'Recovery wallet',
+        //       groupValue: _tempMethod,
+        //       onChanged: (value) {
+        //         setState(() {
+        //           _tempMethod = value;
+        //         });
+        //       },
+        //     ),
+        //   ],
+        // ),
         actions: <Widget>[
           FlatButton(
             onPressed: () => _setMethod(context, _tempMethod),
@@ -146,13 +163,11 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
                   onChanged: (name) {
                     _walletName = name;
                   },
-                  // onSaved: (value) {
-                  //   setState(() {
-                  //     _walletName = value;
-                  //   });
-                  // },
+                  
                   decoration: InputDecoration(hintText: 'Wallet name'),
                 ),
+
+                
                 TextFormField(
                   controller: TextEditingController.fromValue(
                       TextEditingValue(text: _method ?? '')),
