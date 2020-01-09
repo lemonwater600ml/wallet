@@ -6,7 +6,6 @@ import 'dart:io';
 import '../models/wallet.dart';
 import '../dummy_data.dart';
 
-
 class WalletScreen extends StatefulWidget {
   static const routeName = '/wallet';
   @override
@@ -15,10 +14,23 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   List<Wallet> wallets = DUMMY_WALLETS;
-  List<Wallet> getWallets () {
+  static const List<String> coinList = [
+    'Bitcoin',
+    'Bitcoin Cash',
+    'Ethereum',
+    'Litecoin',
+    'Dogecoin',
+    'Dash'
+  ];
+  String dropdownValue = coinList[0];
+  List<Wallet> getWallets() {
     return this.wallets;
   }
-  
+
+  void _addCoinIntoWallet(BuildContext context, String coin) {
+    // Waiting to add
+  }
+
   String walletsStr;
 //   void createWallet (String text) async {
 //   final directory = await getApplicationDocumentsDirectory();
@@ -30,41 +42,41 @@ class _WalletScreenState extends State<WalletScreen> {
     Navigator.of(context).pushNamed(CurrencyScreen.routeName, arguments: idx);
   }
 
-  Future<String> get _localPath async {
-  final directory = await getApplicationDocumentsDirectory();
-  // print('directory: ${directory.path}');
-  return directory.path;
-}
+  // Future<String> get _localPath async {
+  // final directory = await getApplicationDocumentsDirectory();
+  // // print('directory: ${directory.path}');
+  // return directory.path;
+// }
 
-  Future<File> get _localFile async {
-  final path = await _localPath;
-  print('path: $path');
-  return File('$path/wallets.txt');
-}
+//   Future<File> get _localFile async {
+//   final path = await _localPath;
+//   print('path: $path');
+//   return File('$path/wallets.txt');
+// }
 
-Future<File> writeWallets(String contentStr) async {
-  final file = await _localFile;
+// Future<File> writeWallets(String contentStr) async {
+//   final file = await _localFile;
 
-  // Write the file.
-  return file.writeAsString('$contentStr');
-}
+//   // Write the file.
+//   return file.writeAsString('$contentStr');
+// }
 
-Future<String> readWallets() async {
-  // try {
-    final file = await _localFile;
-    print('file loading completed');
-    // Read the file.
-    print('file.path: ${file.path}');
+// Future<String> readWallets() async {
+//   // try {
+//     final file = await _localFile;
+//     print('file loading completed');
+//     // Read the file.
+//     print('file.path: ${file.path}');
 
-    String testWalletsStr = await file.readAsString();
-    print('walletsStr loading completed');
-    print('walletsStr: $testWalletsStr');
-    return testWalletsStr;
+//     String testWalletsStr = await file.readAsString();
+//     print('walletsStr loading completed');
+//     print('walletsStr: $testWalletsStr');
+//     return testWalletsStr;
   // } catch (e) {
   //   // If encountering an error, return 0.
   //   return 'loading failed';
   // }
-}
+// }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +102,47 @@ Future<String> readWallets() async {
       return result.toString();
     }
 
+    void _showWalletSelectDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) => AlertDialog(
+          content: DropdownButton<String>(
+            onChanged: (newValue) {
+              setState(() {
+                dropdownValue = newValue;
+              });
+            },
+            value: dropdownValue,
+            items: <String>[
+              'Bitcoin',
+              'Bitcoin Cash',
+              'Ethereum',
+              'Litecoin',
+              'Dogecoin',
+              'Dash'
+            ].map<DropdownMenuItem<String>>(
+              (String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              },
+            ).toList(),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                _addCoinIntoWallet(context, dropdownValue);
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            )
+          ],
+        ),
+      );
+    }
+
     return Column(
       children: <Widget>[
         // Text('Test'),
@@ -100,12 +153,13 @@ Future<String> readWallets() async {
         //         walletsStr = value;
         //       });
         //     });
-          
+
         // },),
         // Text(walletsStr ?? 'faild to load'),
         // RaisedButton(child: Text('write'), onPressed: () {
         //   writeWallets('testString');
         // },),
+
         // Wallet Sum up
         Container(
           decoration: BoxDecoration(
@@ -151,7 +205,9 @@ Future<String> readWallets() async {
               Text('Assets '),
               IconButton(
                 icon: Icon(Icons.add),
-                onPressed: () {},
+                onPressed: () {
+                  _showWalletSelectDialog(context);
+                },
               ),
             ],
           ),
@@ -165,14 +221,12 @@ Future<String> readWallets() async {
                   onTap: () => selectCurrency(context, idx),
                   child: ListTile(
                     leading: Icon(Icons.attach_money),
-                    title: Text(
-                        selectedWallet.coinsNumber[idx]['currency']),
+                    title: Text(selectedWallet.coinsNumber[idx]['currency']),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        Text(selectedWallet.coinsNumber[idx]
-                                ['coinNumber']
+                        Text(selectedWallet.coinsNumber[idx]['coinNumber']
                             .toString()),
                         // Text(
                         //     '\$ ${double.parse(selectedWallet.currenciesCoinNumber[idx]['coinNumber'].toString())}'),
@@ -185,7 +239,7 @@ Future<String> readWallets() async {
               },
               itemCount: selectedWallet.coinsNumber.length),
         ),
-        
+
         // RaisedButton(onPressed: () => createWallet('testWriting'),
         // child: Text('Write string!'),)
       ],
