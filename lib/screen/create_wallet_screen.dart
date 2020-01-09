@@ -1,10 +1,12 @@
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+// import 'dart:io';
+// import 'package:path_provider/path_provider.dart';
 
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitcoin_bip44/bitcoin_bip44.dart' as bip44;
 import 'package:flutter/material.dart';
-import 'package:wallet/screen/create_wallet_check_screen.dart';
+import '../models/wallet_properties.dart';
+import './create_wallet_check_screen.dart';
+import './wallet_screen.dart';
 
 class CreateWalletScreen extends StatefulWidget {
   static const routeName = '/create-wallet';
@@ -15,175 +17,215 @@ class CreateWalletScreen extends StatefulWidget {
 
 class _CreateWalletScreenState extends State<CreateWalletScreen> {
   final _formKey = GlobalKey<FormState>();
+  Map<String, dynamic> walletPropertiesMap = new Map<String, dynamic>();
+  WalletProperties walletProperties;
+
   var mnemonic;
-  int _methodIdx = 0;
+  int numMnemonic = 12;
+  List<String> mnemonicList;
+  var seed;
+  var seedHex;
+  var bip44Wallet;
 
-  void _showCreateNewMethod(BuildContext context) {
+  String _walletName;
+  String _tempMethod;
+  String _method;
+
+  void _setMethod(BuildContext context, String tempMethod) {
     setState(() {
-      _methodIdx = 1;
-      Navigator.of(context).pop();
+      _method = _tempMethod;
     });
+    Navigator.of(context).pop();
   }
 
-  void _showRecoverMethod(BuildContext context) {
-    setState(() {
-      _methodIdx = 2;
-      Navigator.of(context).pop();
-      
-    });
-  }
-
-  void _addNewWalletToDevice(BuildContext context) {
+  void _addNewWalletToDevice(BuildContext context, String mnemonic, var seed) {
     // Place holder for writing new wallet into device
   }
 
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
+  void _createSeedSeedhexWalletobject(
+      BuildContext context, walletName, mnemonic) {
+    this.mnemonicList = mnemonic.split(" ");
+    // print(listMnemonic);
+    // print(listMnemonic.length);
+    this.seed = bip39.mnemonicToSeed(mnemonic);
+    this.seedHex = bip39.mnemonicToSeedHex(mnemonic);
+    this.bip44Wallet = bip44.Bip44(seedHex);
   }
 
-  Future get _localFile async {
-    final path = await _localPath;
-    return File('$path/wallet-info.dart');
+  void _createWalletProperties(BuildContext context) {
+    // print('while creating: ${this.mnemonic}');
+    // var a = WalletProperties(
+    // // this.walletProperties = WalletProperties(
+    //     walletName: this._walletName,
+    //     method: this._method,
+    //     mnemonic: this.mnemonic,
+    //     mnemonicList: this.mnemonicList,
+    //     mnemonicLength: this.mnemonicList.length,
+    //     seed: this.seed,
+    //     seedHex: this.seedHex,
+    //     bip44Wallet: this.bip44Wallet);
+    // print(a.mnemonic);
+    // print(a.walletName);
+
+    walletPropertiesMap['walletName'] = this._walletName;
+    walletPropertiesMap['method'] = this._method ;
+    walletPropertiesMap['mnemonic'] = this.mnemonicList ;
+    walletPropertiesMap['mnemonicList'] = this.mounted ;
+    walletPropertiesMap['mnemonicLength'] = this.mnemonicList.length ;
+    walletPropertiesMap['seed'] = this.seedHex ;
+    walletPropertiesMap['seedHex'] = this.seedHex ;
+    walletPropertiesMap['bip44Wallet'] = this.bip44Wallet ;
+
+    // print(walletPropertiesMap['walletName']);
   }
 
-  Future writeCounter(int counter, String content) async {
-    final file = await _localFile;
-
-    // Write the file
-    return file.writeAsString(content);
+  void _showWalletSelectDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => AlertDialog(
+        content: Column(
+          children: <Widget>[
+            RadioListTile<String>(
+              title: Text('Create new wallet'),
+              value: 'Create new wallet',
+              groupValue: _tempMethod,
+              activeColor: Colors.blue,
+              onChanged: (value) {
+                setState(() {
+                  _tempMethod = value;
+                });
+              },
+            ),
+            RadioListTile<String>(
+              title: Text('Recovery wallet'),
+              value: 'Recovery wallet',
+              groupValue: _tempMethod,
+              onChanged: (value) {
+                setState(() {
+                  _tempMethod = value;
+                });
+              },
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => _setMethod(context, _tempMethod),
+            child: Text('OK'),
+          )
+        ],
+      ),
+    );
   }
 
-  Future readCounter() async {
-    try {
-      final file = await _localFile;
-
-      // Read the file
-      String contents = await file.readAsString();
-
-      return int.parse(contents);
-    } catch (e) {
-      // If we encounter an error, return 0
-      return 0;
-    }
+  void _toCreateWalletCheckScreen(BuildContext context) {
+    _createWalletProperties(context);
+    // print(walletProperties.mnemonic.toString());
+    // print('pass $walletPropertiesMap');
+    Navigator.of(context).pushNamed(CreateWalletCheckScreen.routeName,
+        arguments: walletPropertiesMap);
   }
 
   @override
   Widget build(BuildContext context) {
-    void _recordWalletData(BuildContext context) {
-      // Write the data into disk
-      // Go to the wallet
-    }
-    // mnemonic = 'seed sock milk update focus rotate barely fade car face mechanic mercy';
-
-    while ((mnemonic == null ) || (bip39.validateMnemonic(mnemonic) == false)) {
-      mnemonic = bip39.generateMnemonic();
-    }
-    List<String> listMnemonic = mnemonic.split(" ");
-    var seedHex = bip39.mnemonicToSeedHex(mnemonic);
-    var seed = bip39.mnemonicToSeed(mnemonic);
-    var bip44Wallet = bip44.Bip44(seedHex);
-
-    TextFormField walletInfoField(String hint) {
-      return TextFormField(
-        decoration: InputDecoration(hintText: hint),
-      );
-    }
-
-    void _toCreateWalletVarifyScreen(BuildContext context) {
-      Navigator.of(context).pushNamed(
-        CreateWalletCheckScreen.routeName,
-      );
-    }
-
-    void _showWalletSelectDialog(BuildContext context) {
-      showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (_) => AlertDialog(
-          content: Column(
-            children: <Widget>[
-              RadioListTile(title: Text('Create new wallet'),value: 'create new wallet', onChanged: (_)=>_showCreateNewMethod(context),),
-            RadioListTile(title: Text('Recover wallet'),value: 'recover wallet', onChanged: (_)=>_showRecoverMethod(context),),
-            ],
-          ),
-          actions: <Widget>[
-            
-            FlatButton(
-              onPressed: ()  {Navigator.of(context).pop();},
-              child: Text('OK'),
-            )
-          ],
-        ),
-      );
-    }
-
     return Scaffold(
-        bottomNavigationBar: RaisedButton(
-          child: FlatButton(
-              onPressed: () => _toCreateWalletVarifyScreen(context),
-              child: Text('Next')),
-          onPressed: () => _recordWalletData(context),
-        ),
-        appBar: AppBar(
-          title: Text('Initialize Wallet'),
-        ),
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Container(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  walletInfoField('Wallet name'),
-                  TextFormField(
-                    onTap: () => _showWalletSelectDialog(context),
-                    decoration:
-                        InputDecoration(hintText: 'Select initializing method'),
-                  ),
-                  // walletInfoField(),
-                  
-                  if (_methodIdx == 1)  // Create page
+      appBar: AppBar(
+        title: Text('Initialize Wallet'),
+      ),
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                TextFormField(
+                  // initialValue: _walletName,
+                  onChanged: (name) {
+                    _walletName = name;
+                  },
+                  // onSaved: (value) {
+                  //   setState(() {
+                  //     _walletName = value;
+                  //   });
+                  // },
+                  decoration: InputDecoration(hintText: 'Wallet name'),
+                ),
+                TextFormField(
+                  controller: TextEditingController.fromValue(
+                      TextEditingValue(text: _method ?? '')),
+                  // initialValue: _method,
+                  onTap: () => _showWalletSelectDialog(context),
+                  decoration:
+                      InputDecoration(hintText: 'Select initializing method'),
+                ),
+                if (_method == 'Create new wallet') // Create page
                   Column(
-                    children: <Widget>[Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Text(
-                        'Please write down all mnemonic phrases in sequential order'),
-                  ),
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Text(
+                            'Please write down all mnemonic phrases in sequential order'),
+                      ),
                       Container(
                         child: ListView.builder(
                           itemBuilder: (ctx, idx) {
+                            while ((mnemonic == null) ||
+                                (bip39.validateMnemonic(mnemonic) == false)) {
+                              mnemonic = bip39.generateMnemonic();
+                            }
+                            _createSeedSeedhexWalletobject(
+                                context, _walletName, mnemonic);
+
                             return Padding(
                                 padding: EdgeInsets.all(2),
                                 child: Text(
-                                    '${(idx + 1).toString()}. ${listMnemonic[idx]}'));
-
-                            // return ListTile(
-                            //   leading: Text((idx + 1).toString()),
-                            //   title: Text(listMnemonic[idx]),
-                            //   contentPadding: EdgeInsets.all(0),
-                            // );
+                                    '${(idx + 1).toString()}. ${mnemonicList[idx]}'));
                           },
-                          itemCount: listMnemonic.length,
+                          itemCount: numMnemonic,
                         ),
                         height: 250,
                       ),
                     ],
-                  ) 
-                  else if (_methodIdx == 2) Container(
-                    height: 250,
-                    child: TextFormField(decoration: InputDecoration(hintText: 'Please type in your mnemonic'),),
                   )
-                  ,
-                  // RaisedButton(
-                  //   onPressed: () => _addNewWalletToDevice(context),
-                  //   child: Text('Create'),
-                  // )
-                ],
-              ),
+                else if (_method == 'Recovery wallet')
+                  Container(
+                    height: 250,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          hintText: 'Please type in your mnemonic'),
+                      onSaved: (value) {
+                        setState(() {
+                          mnemonic = value;
+                        });
+                      },
+                    ),
+                  ),
+                // Text('text'),
+                // FlatButton(
+                //     child: Text('createProperties'),
+                //     onPressed: () {
+                //       _createWalletProperties(context);
+                //       print(walletProperties.mnemonic);
+                //     })
+              ],
             ),
           ),
-        ));
+        ),
+      ),
+      bottomNavigationBar: RaisedButton(
+        child: Text('Next'),
+        onPressed: () {
+          if (_method == 'Recovery wallet') {
+            _addNewWalletToDevice(context, mnemonic, seed);
+            Navigator.pop(context);
+          } else if (_method == 'Create new wallet') {
+            _toCreateWalletCheckScreen(context);
+          }
+        },
+      ),
+    );
   }
 }

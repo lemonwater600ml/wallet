@@ -31,7 +31,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
   void _toCreateWalletScreen(BuildContext context) {
 Navigator.of(context).pushNamed(
       CreateWalletScreen.routeName,
-    );
+    ).then((onValue){ setState(){}});
   }
 
   @override

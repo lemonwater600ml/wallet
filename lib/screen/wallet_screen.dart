@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:wallet/screen/currency_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-// import 'package:wallet/widgets/wallet_currency.dart';
+
 import '../models/wallet.dart';
 import '../dummy_data.dart';
 
-// To do
-// fiatMoneyValue
-// fiatMoneyValueSum
 
 class WalletScreen extends StatefulWidget {
+  static const routeName = '/wallet';
   @override
   _WalletScreenState createState() => _WalletScreenState();
 }
@@ -20,15 +18,53 @@ class _WalletScreenState extends State<WalletScreen> {
   List<Wallet> getWallets () {
     return this.wallets;
   }
-  void createWallet (String text) async {
-  final directory = await getApplicationDocumentsDirectory();
-  final file = File('${directory.path}/data.dart');
-  await file.writeAsString(text);
-}
+  
+  String walletsStr;
+//   void createWallet (String text) async {
+//   final directory = await getApplicationDocumentsDirectory();
+//   final file = File('${directory.path}/data.dart');
+//   await file.writeAsString(text);
+// }
 
   void selectCurrency(BuildContext context, num idx) {
     Navigator.of(context).pushNamed(CurrencyScreen.routeName, arguments: idx);
   }
+
+  Future<String> get _localPath async {
+  final directory = await getApplicationDocumentsDirectory();
+  // print('directory: ${directory.path}');
+  return directory.path;
+}
+
+  Future<File> get _localFile async {
+  final path = await _localPath;
+  print('path: $path');
+  return File('$path/wallets.txt');
+}
+
+Future<File> writeWallets(String contentStr) async {
+  final file = await _localFile;
+
+  // Write the file.
+  return file.writeAsString('$contentStr');
+}
+
+Future<String> readWallets() async {
+  // try {
+    final file = await _localFile;
+    print('file loading completed');
+    // Read the file.
+    print('file.path: ${file.path}');
+
+    String testWalletsStr = await file.readAsString();
+    print('walletsStr loading completed');
+    print('walletsStr: $testWalletsStr');
+    return testWalletsStr;
+  // } catch (e) {
+  //   // If encountering an error, return 0.
+  //   return 'loading failed';
+  // }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +92,20 @@ class _WalletScreenState extends State<WalletScreen> {
 
     return Column(
       children: <Widget>[
+        // Text('Test'),
+        // RaisedButton(child: Text('Read and print'), onPressed: (){
+        //     // readWallets();
+        //     readWallets().then((value){
+        //       setState(() {
+        //         walletsStr = value;
+        //       });
+        //     });
+          
+        // },),
+        // Text(walletsStr ?? 'faild to load'),
+        // RaisedButton(child: Text('write'), onPressed: () {
+        //   writeWallets('testString');
+        // },),
         // Wallet Sum up
         Container(
           decoration: BoxDecoration(
