@@ -4,9 +4,12 @@
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitcoin_bip44/bitcoin_bip44.dart' as bip44;
 import 'package:flutter/material.dart';
-import '../models/wallet_properties.dart';
+import '../models/wallet.dart';
 import './create_wallet_check_screen.dart';
-import './wallet_screen.dart';
+
+import 'dart:async';
+
+import 'package:sqflite/sqflite.dart';
 
 class CreateWalletScreen extends StatefulWidget {
   static const routeName = '/create-wallet';
@@ -18,7 +21,7 @@ class CreateWalletScreen extends StatefulWidget {
 class _CreateWalletScreenState extends State<CreateWalletScreen> {
   final _formKey = GlobalKey<FormState>();
   Map<String, dynamic> walletPropertiesMap = new Map<String, dynamic>();
-  WalletProperties walletProperties;
+  Wallet wallet;
 
   var mnemonic;
   int numMnemonic = 12;
@@ -31,8 +34,33 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
   String _tempMethod;
   String _method;
 
-  List<String> methodList = ['Please select method', 'Create new wallet','Recovery wallet'];
-  
+  List<String> methodList = [
+    'Please select method',
+    'Create new wallet',
+    'Recovery wallet'
+  ];
+
+//   final Future<Database> database = openDatabase(
+//   join(await getDatabasesPath(), 'wallet_database.db'),
+//   onCreate: (db, version) {
+//     return db.execute(
+//       "CREATE TABLE wallets(walletName TEXT, method TEXT, mnemonic TEXT, seed TEXT, seedHex TEXT, bip44Wallet TEXT)",
+//     );
+//   }, version: 1
+// );
+
+  Future<Database> database;
+
+  // void createDatabase(String databaseName) async {
+  //   final Future<Database> database = openDatabase(
+  //       join(await getDatabasesPath(), databaseName), onCreate: (db, version) {
+  //     return db.execute(
+  //       "CREATE TABLE wallets(walletName TEXT, method TEXT, mnemonic TEXT, seed TEXT, seedHex TEXT, bip44Wallet TEXT, coinTypes TEXT, coins TEXT)",
+  //     );
+  //   }, version: 1);
+  //   this.database = database;
+  //   return;
+  // }
 
   void _setMethod(BuildContext context, String tempMethod) {
     setState(() {
@@ -56,28 +84,31 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
   }
 
   void _createWalletProperties(BuildContext context) {
-    // print('while creating: ${this.mnemonic}');
+    print('while creating: ${this.mnemonic}');
     // var a = WalletProperties(
-    // // this.walletProperties = WalletProperties(
-    //     walletName: this._walletName,
-    //     method: this._method,
-    //     mnemonic: this.mnemonic,
-    //     mnemonicList: this.mnemonicList,
-    //     mnemonicLength: this.mnemonicList.length,
-    //     seed: this.seed,
-    //     seedHex: this.seedHex,
-    //     bip44Wallet: this.bip44Wallet);
-    // print(a.mnemonic);
-    // print(a.walletName);
+    this.wallet = Wallet(
+        name: this._walletName,
+        // id: this.id,
+        method: this._method,
+        mnemonic: this.mnemonic,
+        // mnemonicList: this.mnemonicList,
+        mnemonicLength: this.mnemonicList.length,
+        seed: this.seed,
+        seedHex: this.seedHex,
+        bip44Wallet: this.bip44Wallet);
+    // print('=== walletProperties ===>');
+    // print(walletProperties.mnemonic);
+    // print(walletProperties.walletName);
+    // print('<=== walletProperties ===');
 
     walletPropertiesMap['walletName'] = this._walletName;
-    walletPropertiesMap['method'] = this._method ;
-    walletPropertiesMap['mnemonic'] = this.mnemonic ;
-    walletPropertiesMap['mnemonicList'] = this.mnemonicList ;
-    walletPropertiesMap['mnemonicLength'] = this.mnemonicList.length ;
-    walletPropertiesMap['seed'] = this.seedHex ;
-    walletPropertiesMap['seedHex'] = this.seedHex ;
-    walletPropertiesMap['bip44Wallet'] = this.bip44Wallet ;
+    walletPropertiesMap['method'] = this._method;
+    walletPropertiesMap['mnemonic'] = this.mnemonic;
+    walletPropertiesMap['mnemonicList'] = this.mnemonicList;
+    walletPropertiesMap['mnemonicLength'] = this.mnemonicList.length;
+    walletPropertiesMap['seed'] = this.seed;
+    walletPropertiesMap['seedHex'] = this.seedHex;
+    walletPropertiesMap['bip44Wallet'] = this.bip44Wallet;
 
     // print(walletPropertiesMap['walletName']);
   }
@@ -88,18 +119,20 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
       barrierDismissible: true,
       builder: (_) => AlertDialog(
         content: DropdownButton(
-          onChanged: (newValue) {setState(() {
-            _tempMethod = newValue;
-          });},
+          onChanged: (newValue) {
+            setState(() {
+              _tempMethod = newValue;
+            });
+          },
           value: _tempMethod,
           items: methodList.map<DropdownMenuItem<String>>(
-              (String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              },
-            ).toList(),
+            (String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            },
+          ).toList(),
         ),
         // content: Column(
         //   children: <Widget>[
@@ -163,11 +196,10 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
                   onChanged: (name) {
                     _walletName = name;
                   },
-                  
+
                   decoration: InputDecoration(hintText: 'Wallet name'),
                 ),
 
-                
                 TextFormField(
                   controller: TextEditingController.fromValue(
                       TextEditingValue(text: _method ?? '')),

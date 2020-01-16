@@ -21,7 +21,7 @@ class CurrencyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // The following four variables can be passed from wallet_screen
     final exchangeRate = EXCHANGERATES;
-    final selectedWalletIdx = 'eth1';
+    final selectedWalletIdx = 'ETH1';
     final selectedWallet =
         DUMMY_WALLETS.firstWhere((wallet) => wallet.id == selectedWalletIdx);
     final receivedRecords = TRANSACTIONS_RCV;

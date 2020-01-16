@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 import './wallet_screen.dart';
-import '../models/wallet_properties.dart';
+import '../models/wallet\.dart';
 
 class CreateWalletCheckScreen extends StatelessWidget {
   static const routeName = '/create-wallet-check';
   final _formKey = GlobalKey<FormState>();
   List<String> _mnemonicList;
-  WalletProperties walletProperties;
+  Wallet wallet;
   Map<String, dynamic> walletPropertiesMap = new Map<String, dynamic>();
   List<int> _answerIndexes = [
     2,
@@ -70,7 +70,7 @@ class CreateWalletCheckScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     walletPropertiesMap = ModalRoute.of(context).settings.arguments;
     // walletProperties.mnemonic = '123';
-    print('Data get: ${ModalRoute.of(context).settings.arguments}');
+    // print('Data get: ${ModalRoute.of(context).settings.arguments}');
     
     // test only
     _mnemonicList = [

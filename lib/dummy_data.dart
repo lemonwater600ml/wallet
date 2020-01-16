@@ -1,8 +1,8 @@
-import './models/wallet.dart';
+import './models/wallet_old.dart';
 
 const DUMMY_WALLETS = const [
-  Wallet(
-    id: 'eth1',
+  WalletOld(
+    id: 'ETH1',
     type: 'ETH',
     address: '0xTe34Gder1234567890',
     coinsNumber: [
