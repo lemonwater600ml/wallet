@@ -5,10 +5,8 @@ class Wallet {
   final String id;
   final String mainType;
   final String mainAddress;
-  final String method;
-
+  final String createMethod;
   final mnemonic;
-  // final List<String> mnemonicList;
   final int mnemonicLength;
   final seed;
   final seedHex;
@@ -17,12 +15,27 @@ class Wallet {
   String coinAddresses;
   String coins;      // coins is a String zip with coinTypes and split by space e.g.,  "0.2223 2"
 
+// can create new table for trans record and search according to wallet name
+// final TRANSACTIONS_SND = [
+//   {
+//     'id': "000001",
+//     'type': 'ETH',
+//     'tranType': 'Send',
+//     'amount': '0.1',
+//     'from': '000ethreceive000',
+//     'to': '0xTe34Gder1234567890',
+//     'time': DateTime.parse("2019-07-20 20:18:04Z"),
+//     'minerFee': 0.00004,
+//     'status': 'Completed!',
+//     'confirmedNum': 645,
+//   },
+
   Wallet({
     @required this.name,
-    @required this.id, 
+    this.id, 
     this.mainType,
     this.mainAddress,
-    @required this.method,
+    this.createMethod,
     @required this.mnemonic,
     // @required this.mnemonicList,
     this.mnemonicLength = 12,
@@ -43,7 +56,7 @@ class Wallet {
       'id': id,
       'mainType': mainType,
       'mainAddress': mainAddress,
-      'method': method,
+      'createMethod': createMethod,
       'mnemonic': mnemonic,
       'seed': seed,
       'seedHex': seedHex,

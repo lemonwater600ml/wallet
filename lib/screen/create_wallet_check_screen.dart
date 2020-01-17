@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-
-import './wallet_screen.dart';
-import '../models/wallet\.dart';
+import 'dart:async';
+import './tabs_main_screen.dart';
+import 'tabs_main_screen.dart';
+import '../models/wallet.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class CreateWalletCheckScreen extends StatelessWidget {
   static const routeName = '/create-wallet-check';
   final _formKey = GlobalKey<FormState>();
   List<String> _mnemonicList;
-  Wallet wallet;
-  Map<String, dynamic> walletPropertiesMap = new Map<String, dynamic>();
+  
+  Wallet newWallet;
+  List<Wallet> wallets;
+  Future<Database> database;
+  // Map<String, dynamic> walletPropertiesMap = new Map<String, dynamic>();
   List<int> _answerIndexes = [
     2,
     5,
@@ -20,8 +24,75 @@ class CreateWalletCheckScreen extends StatelessWidget {
 
   // CreateWalletCheckScreen({@required this.walletProperties });
 
-  void _sendWalletDateToDevice() {
+  void _writeNewWalletIntoCard() {
     // null interface
+  }
+
+  Future<void> setDatabasePathAndOpen(String databaseName) async {
+    final Future<Database> newDatabase =
+        openDatabase(join(await getDatabasesPath(), databaseName));
+    this.database = newDatabase;
+    print('In CreateWalletCheckScreen() ====database opened===');
+  }
+
+  Future<void> insertWallet(String tableName, Wallet wallet) async {
+    final Database db = await database;
+    await db.insert(
+      tableName,
+      wallet.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print('In CheckScreen, inserWallet completed');
+  }
+
+  Stream<List<Wallet>> getWalletsStream() async* {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('wallets');
+
+    List<Wallet> loadedWallets = List.generate(maps.length, (i) {
+      return Wallet(
+        name: maps[i]['name'],
+        id: maps[i]['id'],
+        mainType: maps[i]['mainType'],
+        mainAddress: maps[i]['mainAddress'],
+        createMethod: maps[i]['createMethod'],
+        mnemonic: maps[i]['mnemonic'],
+        mnemonicLength: maps[i]['mnemonicLength'],
+        seed: maps[i]['seed'],
+        seedHex: maps[i]['seedHex'],
+        bip44Wallet: maps[i]['bip44Wallet'],
+        coinTypes: maps[i]['coinTypes'],
+        coinAddresses: maps[i]['coinAddresses'],
+        coins: maps[i]['coins'],
+      );
+    });
+    this.wallets = loadedWallets;
+    yield loadedWallets;
+  }
+
+  Future<List<Wallet>> getWallets() async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('wallets');
+
+    List<Wallet> loadedWallets = List.generate(maps.length, (i) {
+      return Wallet(
+        name: maps[i]['name'],
+        id: maps[i]['id'],
+        mainType: maps[i]['mainType'],
+        mainAddress: maps[i]['mainAddress'],
+        createMethod: maps[i]['createMethod'],
+        mnemonic: maps[i]['mnemonic'],
+        mnemonicLength: maps[i]['mnemonicLength'],
+        seed: maps[i]['seed'],
+        seedHex: maps[i]['seedHex'],
+        bip44Wallet: maps[i]['bip44Wallet'],
+        coinTypes: maps[i]['coinTypes'],
+        coinAddresses: maps[i]['coinAddresses'],
+        coins: maps[i]['coins'],
+      );
+    });
+    this.wallets = loadedWallets;
+    return loadedWallets;
   }
 
   Widget _questionText(String text, var answer, var sumAnswer) {
@@ -34,61 +105,29 @@ class CreateWalletCheckScreen extends StatelessWidget {
     );
   }
 
-//   Future<String> get _localPath async {
-//   final directory = await getApplicationDocumentsDirectory();
-
-//   return directory.path;
-// }
-
-// Future<File> get _localFile async {
-//   final path = await _localPath;
-//   return File('$path/../wallets.dart');
-// }
-
-// Future<File> writeCounter(int counter) async {
-//   final file = await _localFile;
-
-//   // Write the file.
-//   return file.writeAsString('$counter');
-// }
-
-// Future<int> readCounter() async {
-//   try {
-//     final file = await _localFile;
-
-//     // Read the file.
-//     String contents = await file.readAsString();
-
-//     return int.parse(contents);
-//   } catch (e) {
-//     // If encountering an error, return 0.
-//     return 0;
-//   }
-// }
-
   @override
   Widget build(BuildContext context) {
-    walletPropertiesMap = ModalRoute.of(context).settings.arguments;
+    newWallet = ModalRoute.of(context).settings.arguments;
     // walletProperties.mnemonic = '123';
     // print('Data get: ${ModalRoute.of(context).settings.arguments}');
-    
-    // test only
-    _mnemonicList = [
-      '-1',
-      '-2',
-      '-3',
-      '-4',
-      '-5',
-      '-6',
-      '-7',
-      '-8',
-      '-9',
-      '-10',
-      '-11',
-      '-12',
-    ];
-        // test only
-   _mnemonicList = walletPropertiesMap['mnemonicList'];
+
+    // test _mnemonicList
+    // _mnemonicList = [
+    //   '-1',
+    //   '-2',
+    //   '-3',
+    //   '-4',
+    //   '-5',
+    //   '-6',
+    //   '-7',
+    //   '-8',
+    //   '-9',
+    //   '-10',
+    //   '-11',
+    //   '-12',
+    // ];
+
+    _mnemonicList = newWallet.mnemonic.toString().split(' ');
     return Scaffold(
       appBar: AppBar(
         title: Text('Initialize Wallet'),
@@ -164,18 +203,28 @@ class CreateWalletCheckScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           FlatButton(
-            onPressed: () => Navigator.of(context).pop(),
             child: Text('Back'),
+            onPressed: () => Navigator.of(context).pop(),
           ),
           FlatButton(
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                _sendWalletDateToDevice();
-              }
-              // Navigator.of(context)
-              // .popUntil(ModalRoute.withName(WalletScreen.routeName));
-            },
             child: Text('Next'),
+            onPressed: () async {
+              print('onPressed detected');
+              if (_formKey.currentState.validate()) {
+                print(
+                    "In CreateWalletCheckScreen: validate completed, start open database");
+                await setDatabasePathAndOpen('wallets');
+                print("In CreateWalletCheckScreen: start inserting wallet");
+                await insertWallet('wallets', this.newWallet);
+                _writeNewWalletIntoCard();
+                print('In CreateWalletCheckScreen: onPressed completed');
+                var wallets = await getWallets();
+                print('In CreateWalletCheckScreen: number of wallets in db: ${wallets.length}');
+
+                Navigator.popUntil(
+                    context, ModalRoute.withName(TabsMainScreen.routeName));
+              }
+            },
           )
         ],
       ),

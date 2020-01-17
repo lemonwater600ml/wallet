@@ -1,12 +1,9 @@
-// import 'dart:io';
-// import 'package:path_provider/path_provider.dart';
-
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitcoin_bip44/bitcoin_bip44.dart' as bip44;
 import 'package:flutter/material.dart';
 import '../models/wallet.dart';
 import './create_wallet_check_screen.dart';
-
+import './tabs_main_screen.dart';
 import 'dart:async';
 
 import 'package:sqflite/sqflite.dart';
@@ -20,8 +17,8 @@ class CreateWalletScreen extends StatefulWidget {
 
 class _CreateWalletScreenState extends State<CreateWalletScreen> {
   final _formKey = GlobalKey<FormState>();
-  Map<String, dynamic> walletPropertiesMap = new Map<String, dynamic>();
-  Wallet wallet;
+  // Map<String, dynamic> walletPropertiesMap = new Map<String, dynamic>();
+  Wallet newWallet;
 
   var mnemonic;
   int numMnemonic = 12;
@@ -30,12 +27,11 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
   var seedHex;
   var bip44Wallet;
 
-  String _walletName;
+  String _name;
   String _tempMethod;
-  String _method;
+  String _createMethod;
 
   List<String> methodList = [
-    'Please select method',
     'Create new wallet',
     'Recovery wallet'
   ];
@@ -64,12 +60,12 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
 
   void _setMethod(BuildContext context, String tempMethod) {
     setState(() {
-      _method = _tempMethod;
+      _createMethod = _tempMethod;
     });
     Navigator.of(context).pop();
   }
 
-  void _addNewWalletToDevice(BuildContext context, String mnemonic, var seed) {
+  void _recoveryWalletToPhone(BuildContext context, String mnemonic, var seed) {
     // Place holder for writing new wallet into device
   }
 
@@ -84,31 +80,53 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
   }
 
   void _createWalletProperties(BuildContext context) {
-    print('while creating: ${this.mnemonic}');
+    // print('while creating: ${this.mnemonic}');
     // var a = WalletProperties(
-    this.wallet = Wallet(
-        name: this._walletName,
-        // id: this.id,
-        method: this._method,
+    this.newWallet = Wallet(
+        name: this._name,
+        // id: ,
+        // mainType: , ///
+        // mainAddress: ,
+        createMethod: this._createMethod,
         mnemonic: this.mnemonic,
-        // mnemonicList: this.mnemonicList,
         mnemonicLength: this.mnemonicList.length,
-        seed: this.seed,
-        seedHex: this.seedHex,
-        bip44Wallet: this.bip44Wallet);
+        seed: this.seed.toString(),
+        seedHex: this.seedHex.toString(),
+        bip44Wallet: this.bip44Wallet.toString(),
+        // coinTypes: ,
+        // coinAddresses: ,
+        // coins: ,
+        );
+        
+
+    //     @required this.name,
+    // this.id, 
+    // this.mainType,
+    // this.mainAddress,
+    // this.createMethod,
+    // @required this.mnemonic,
+    // // @required this.mnemonicList,
+    // this.mnemonicLength = 12,
+    // @required this.seed,
+    // @required this.seedHex,
+    // @required this.bip44Wallet,
+    // this.coinTypes,
+    // this.coinAddresses,
+    // this.coins,
+
     // print('=== walletProperties ===>');
     // print(walletProperties.mnemonic);
     // print(walletProperties.walletName);
     // print('<=== walletProperties ===');
 
-    walletPropertiesMap['walletName'] = this._walletName;
-    walletPropertiesMap['method'] = this._method;
-    walletPropertiesMap['mnemonic'] = this.mnemonic;
-    walletPropertiesMap['mnemonicList'] = this.mnemonicList;
-    walletPropertiesMap['mnemonicLength'] = this.mnemonicList.length;
-    walletPropertiesMap['seed'] = this.seed;
-    walletPropertiesMap['seedHex'] = this.seedHex;
-    walletPropertiesMap['bip44Wallet'] = this.bip44Wallet;
+    // walletPropertiesMap['name'] = this._name;
+    // walletPropertiesMap['method'] = this._createMethod;
+    // walletPropertiesMap['mnemonic'] = this.mnemonic;
+    // walletPropertiesMap['mnemonicList'] = this.mnemonicList;
+    // walletPropertiesMap['mnemonicLength'] = this.mnemonicList.length;
+    // walletPropertiesMap['seed'] = this.seed;
+    // walletPropertiesMap['seedHex'] = this.seedHex;
+    // walletPropertiesMap['bip44Wallet'] = this.bip44Wallet;
 
     // print(walletPropertiesMap['walletName']);
   }
@@ -117,54 +135,58 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
     showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (_) => AlertDialog(
-        content: DropdownButton(
-          onChanged: (newValue) {
-            setState(() {
-              _tempMethod = newValue;
-            });
-          },
-          value: _tempMethod,
-          items: methodList.map<DropdownMenuItem<String>>(
-            (String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            },
-          ).toList(),
-        ),
-        // content: Column(
-        //   children: <Widget>[
-        //     RadioListTile<String>(
-        //       title: Text('Create new wallet'),
-        //       value: 'Create new wallet',
-        //       groupValue: _tempMethod,
-        //       activeColor: Colors.blue,
-        //       onChanged: (value) {
-        //         setState(() {
-        //           _tempMethod = value;
-        //         });
-        //       },
-        //     ),
-        //     RadioListTile<String>(
-        //       title: Text('Recovery wallet'),
-        //       value: 'Recovery wallet',
-        //       groupValue: _tempMethod,
-        //       onChanged: (value) {
-        //         setState(() {
-        //           _tempMethod = value;
-        //         });
-        //       },
-        //     ),
-        //   ],
-        // ),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () => _setMethod(context, _tempMethod),
-            child: Text('OK'),
-          )
-        ],
+      builder: (_) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            content: DropdownButton(
+              onChanged: (newValue) {
+                setState(() {
+                  _tempMethod = newValue;
+                });
+              },
+              value: _tempMethod,
+              items: methodList.map<DropdownMenuItem<String>>(
+                (String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                },
+              ).toList(),
+            ),
+            // content: Column(
+            //   children: <Widget>[
+            //     RadioListTile<String>(
+            //       title: Text('Create new wallet'),
+            //       value: 'Create new wallet',
+            //       groupValue: _tempMethod,
+            //       activeColor: Colors.blue,
+            //       onChanged: (value) {
+            //         setState(() {
+            //           _tempMethod = value;
+            //         });
+            //       },
+            //     ),
+            //     RadioListTile<String>(
+            //       title: Text('Recovery wallet'),
+            //       value: 'Recovery wallet',
+            //       groupValue: _tempMethod,
+            //       onChanged: (value) {
+            //         setState(() {
+            //           _tempMethod = value;
+            //         });
+            //       },
+            //     ),
+            //   ],
+            // ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => _setMethod(context, _tempMethod),
+                child: Text('OK'),
+              )
+            ],
+          );
+        }
       ),
     );
   }
@@ -174,7 +196,7 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
     // print(walletProperties.mnemonic.toString());
     // print('pass $walletPropertiesMap');
     Navigator.of(context).pushNamed(CreateWalletCheckScreen.routeName,
-        arguments: walletPropertiesMap);
+        arguments: newWallet);
   }
 
   @override
@@ -194,7 +216,7 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
                 TextFormField(
                   // initialValue: _walletName,
                   onChanged: (name) {
-                    _walletName = name;
+                    _name = name;
                   },
 
                   decoration: InputDecoration(hintText: 'Wallet name'),
@@ -202,13 +224,13 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
 
                 TextFormField(
                   controller: TextEditingController.fromValue(
-                      TextEditingValue(text: _method ?? '')),
+                      TextEditingValue(text: _createMethod ?? '')),
                   // initialValue: _method,
                   onTap: () => _showWalletSelectDialog(context),
                   decoration:
                       InputDecoration(hintText: 'Select initializing method'),
                 ),
-                if (_method == 'Create new wallet') // Create page
+                if (_createMethod == 'Create new wallet') // Create page
                   Column(
                     children: <Widget>[
                       Padding(
@@ -224,7 +246,7 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
                               mnemonic = bip39.generateMnemonic();
                             }
                             _createSeedSeedhexWalletobject(
-                                context, _walletName, mnemonic);
+                                context, _name, mnemonic);
 
                             return Padding(
                                 padding: EdgeInsets.all(2),
@@ -237,7 +259,7 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
                       ),
                     ],
                   )
-                else if (_method == 'Recovery wallet')
+                else if (_createMethod == 'Recovery wallet')
                   Container(
                     height: 250,
                     child: TextFormField(
@@ -265,11 +287,12 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
       bottomNavigationBar: RaisedButton(
         child: Text('Next'),
         onPressed: () {
-          if (_method == 'Recovery wallet') {
-            _addNewWalletToDevice(context, mnemonic, seed);
-            Navigator.pop(context);
-          } else if (_method == 'Create new wallet') {
+          if (_createMethod == 'Recovery wallet') {
+            _recoveryWalletToPhone(context, mnemonic, seed);
+            Navigator.popUntil(context, ModalRoute.withName(TabsMainScreen.routeName));
+          } else if (_createMethod == 'Create new wallet') {
             _toCreateWalletCheckScreen(context);
+            
           }
         },
       ),
