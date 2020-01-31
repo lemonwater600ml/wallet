@@ -219,6 +219,7 @@ class CreateWalletCheckScreen extends StatelessWidget {
                 _writeNewWalletIntoCard();
                 print('In CreateWalletCheckScreen: onPressed completed');
                 var wallets = await getWallets();
+                
                 print('In CreateWalletCheckScreen: number of wallets in db: ${wallets.length}');
 
                 Navigator.popUntil(

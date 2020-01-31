@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../models/wallet.dart';
 
@@ -6,18 +8,43 @@ import './wallet_screen.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+// import '../main.dart';
+
+class WalletsIht extends InheritedWidget {
+  String displayedName;
+  final List<Wallet> wallets;
+  WalletsIht({Widget child, this.displayedName, this.wallets})
+      : super(child: child);
+
+  @override
+  bool updateShouldNotify(WalletsIht oldWidget) {
+    if (wallets != oldWidget.wallets ||
+        displayedName != oldWidget.displayedName) {
+      print('WalletsIht detected change!!!!');
+    }
+    return wallets != oldWidget.wallets ||
+        displayedName != oldWidget.displayedName;
+  }
+
+  static WalletsIht of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType();
+}
+
 class InheritedDisplayedName extends InheritedWidget {
   final String displayedName;
   InheritedDisplayedName({Widget child, this.displayedName})
       : super(child: child);
 
   @override
-  bool updateShouldNotify(InheritedDisplayedName oldWidget) =>
-      displayedName != oldWidget.displayedName;
-  // static InheritedDisplayedId of(BuildContext context) => context.dependOnInheritedWidgetOfExactType();
+  bool updateShouldNotify(InheritedDisplayedName oldWidget) {
+    if (displayedName != oldWidget.displayedName) {
+      print('InheritedDisplayedName detected change!!!!');
+    }
+    return displayedName != oldWidget.displayedName;
+  }
+
   static InheritedDisplayedName of(BuildContext context) =>
-      context.inheritFromWidgetOfExactType(InheritedDisplayedName)
-          as InheritedDisplayedName;
+      context.dependOnInheritedWidgetOfExactType();
 }
 
 class TabsMainScreen extends StatefulWidget {
@@ -27,8 +54,11 @@ class TabsMainScreen extends StatefulWidget {
 }
 
 class _TabsWalletScreenState extends State<TabsMainScreen> {
+  WalletsIht ihtWallets;
+
   Future<Database> database;
   String displayedName;
+  List<Wallet> wallets;
   Stream<List<Wallet>> walletsStream;
   Wallet displayedWallet;
 
@@ -55,6 +85,13 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         .then((onValue) {
       // setState() {}
     });
+  }
+
+  Future<void> setDatabasePathAndOpen(String databaseName) async {
+    final Future<Database> newDatabase =
+        openDatabase(join(await getDatabasesPath(), databaseName));
+    this.database = newDatabase;
+    print('In TabsScreen: ====database opened===');
   }
 
   Future<void> createDummyData() async {
@@ -139,19 +176,34 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
       );
     });
     yield loadedWallets;
+    this.ihtWallets = WalletsIht(wallets: loadedWallets);
+    this.wallets = loadedWallets;
+
+    // print('In TabsScreen: Wallets.name in loadedWalletsFromInherited');
+    // for (var i = 0; i < ihtWallets.wallets.length; i++) {
+    //   print(ihtWallets.wallets[i].name.toString());
+    // }
   }
 
   @override
   initState() {
     super.initState();
     if (walletsStream == null) {
-      //////////////////// Need to clean Dummy Data and create and empty homepage (empty wallet)
+      ////////////// Need to clean Dummy Data and create and empty homepage (empty wallet)
       // createDummyData().then((_) {
       //   setState(() {
       //     walletsStream = getWalletsStream();
       //   });
+      //   print('In TabsScreen: createDummyData script done!');
       // });
-      // print('In TabsScreen: DummyData created!');
+      //
+      setDatabasePathAndOpen('wallets').then((_) {
+        setState(() {
+          walletsStream = getWalletsStream();
+        });
+      });
+      print(
+          'In TabsScreen: "initStat" ask walletsStream from created DummyData');
     }
   }
 
@@ -161,11 +213,6 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         stream: walletsStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            createDummyData().then((_) {
-              setState(() {
-                walletsStream = getWalletsStream();
-              });
-            });
             return Scaffold(
               appBar: AppBar(
                 title: Text('Loading data...'),
@@ -175,44 +222,20 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
           } else {
             displayedName ??= snapshot.data[0].name;
             print('In TabsScreen: Number of wallets: ${snapshot.data.length}');
-            print('In TabsScreen: displayedName after check: $displayedName');
+            // print('In TabsScreen: displayedName after check: $displayedName');
 
             return Scaffold(
               appBar: AppBar(
                 title: Text('Wallet'),
                 centerTitle: true,
               ),
+              // body: WalletScreen(),
 
-              body: InheritedDisplayedName(
+              body: WalletsIht(
+                wallets: wallets,
                 displayedName: displayedName,
                 child: WalletScreen(),
               ),
-              // body: _pages[_selectedPageIndex]['page'],
-              // bottomNavigationBar: BottomNavigationBar(
-              //   onTap: null,
-              //   backgroundColor: Theme.of(context).primaryColor,
-              //   unselectedItemColor: Colors.grey,
-              //   selectedItemColor: Theme.of(context).accentColor,
-              //   currentIndex: _selectedPageIndex,
-              //   items: [
-              //     BottomNavigationBarItem(
-              //       icon: Icon(Icons.attach_money),
-              //       title: Text('Wallet'),
-              //     ),
-              //     BottomNavigationBarItem(
-              //       icon: Icon(Icons.multiline_chart),
-              //       title: Text('Market(X)'),
-              //     ),
-              //     BottomNavigationBarItem(
-              //       icon: Icon(Icons.laptop_chromebook),
-              //       title: Text('Browser(X)'),
-              //     ),
-              //     BottomNavigationBarItem(
-              //       icon: Icon(Icons.account_balance_wallet),
-              //       title: Text('My Profile(X)'),
-              //     ),
-              //   ],
-              // ),
               drawer: Drawer(
                 child: Column(
                   children: <Widget>[
@@ -231,11 +254,14 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
                                 });
                                 print(
                                     'displayedName after tap: $displayedName');
+
                                 Navigator.of(context).pop();
                               },
                               leading: Icon(Icons.lock_outline),
-                              title: Text(snapshot.data[idx]?.name?? 'unknown name'),
-                              trailing: Text(snapshot.data[idx]?.id?? 'unknown id'),
+                              title: Text(
+                                  snapshot.data[idx]?.name ?? 'unknown name'),
+                              trailing:
+                                  Text(snapshot.data[idx]?.id ?? 'unknown id'),
                             ),
                           );
                         },

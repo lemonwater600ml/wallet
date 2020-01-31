@@ -8,6 +8,7 @@ import 'dart:async';
 import '../models/wallet.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import '../main.dart';
 
 /////////// Display dashboard ///////////
 // Upper block title: Text('${displayedWallet.mainType}-Wallet')
@@ -150,6 +151,7 @@ class _WalletScreenState extends State<WalletScreen> {
     // print('newDisplayedWallet.coinTypes: ${newDisplayedWallet.coinTypes}');
     await db.update(tableName, newDisplayedWallet.toMap(),
         where: 'name = ?', whereArgs: [newDisplayedWallet.name]);
+    print('_updateWallet script completed!');
   }
 
   void selectCurrency(BuildContext context, num idx) {
@@ -159,14 +161,15 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   initState() {
     super.initState();
-    if (walletsStream == null) {
-      setDatabasePathAndOpen('wallets').then((_) {
-        setState(() {
-          // getWallets();
-          walletsStream = getWalletsStream();
-        });
-      });
-    }
+    setDatabasePathAndOpen('wallets').then((_){});
+    // if (walletsStream == null) {
+    //   setDatabasePathAndOpen('wallets').then((_) {
+    //     setState(() {
+    //       // getWallets();
+    //       walletsStream = getWalletsStream();
+    //     });
+    //   });
+    // }
     // getWallets();
   }
 
@@ -240,7 +243,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     await _updateWallet(context, 'wallets', displayedWallet);
                     print('_updateWallet completed');
                     // print('======== _updateWallet after adding asset =====');
-                    walletsStream = getWalletsStream();
+                    // walletsStream = getWalletsStream();
                     print('In _updateWallet Befroe setState');
                     super.setState(() {});
                     Navigator.of(context).pop();
@@ -255,24 +258,130 @@ class _WalletScreenState extends State<WalletScreen> {
       );
     }
     
-    print('In WalletScreen() displayedName : $displayedName');
-    return StreamBuilder<List<Wallet>>(
-        stream: walletsStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Column(
-              children: <Widget>[Text('Loading...')],
-            );
-          } else {
+    // print('In WalletScreen() displayedName : $displayedName');
+    // return StreamBuilder<List<Wallet>>(
+    //     stream: walletsStream,
+    //     builder: (context, snapshot) {
+    //       if (!snapshot.hasData) {
+    //         return Column(
+    //           children: <Widget>[Text('Loading...')],
+    //         );
+    //       } else {
             
             
-            print('In WalletScreen(): InheritedDisplayedId.of(context).displayedName ${InheritedDisplayedName.of(context).displayedName}');
-            displayedName = InheritedDisplayedName.of(context).displayedName;
-            print('In WalletScreen(): After assign displayedName from inherit: $displayedName') ; 
-             displayedWallet =
-                snapshot.data.firstWhere((wallet) => wallet.name == displayedName);
+    //         print('In WalletScreen(): WalletsIht.of(context).displayedName ${WalletsIht.of(context).displayedName}');
+    //         displayedName = WalletsIht.of(context).displayedName;
+    //         // print('In WalletScreen(): After assign displayedName from inherit: $displayedName') ; 
+    //          displayedWallet =
+    //             snapshot.data.firstWhere((wallet) => wallet.name == displayedName);
+    //          print('In WalletScreen(): displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
+    //         return Column(
+    //           children: <Widget>[
+        //         // Wallet Sum up
+        //         Container(
+        //           decoration: BoxDecoration(
+        //             color: Theme.of(context).primaryColorLight,
+        //             borderRadius: BorderRadius.all(
+        //               Radius.circular(15),
+        //             ),
+        //           ),
+        //           height: 100,
+        //           margin: EdgeInsets.all(15),
+        //           padding: EdgeInsets.all(10),
+        //           child: Column(
+        //             mainAxisAlignment: MainAxisAlignment.start,
+        //             crossAxisAlignment: CrossAxisAlignment.start,
+        //             children: <Widget>[
+        //               Row(
+        //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                 children: <Widget>[
+                          
+        //                   Text('${displayedWallet.mainType ?? 'unknown mainType'}-Wallet'),
+        //                   Icon(Icons.more_horiz)
+        //                 ],
+        //               ),
+        //               Text(displayedWallet.mainAddress ?? 'unknown address'),
+        //               Row(
+        //                 mainAxisAlignment: MainAxisAlignment.end,
+        //                 children: <Widget>[
+        //                   Text(
+        //                     '\$ ${fiatValueSum(displayedWallet.coinTypes, displayedWallet.coins, exchangeRate)}',
+        //                     // 'tttest',
+        //                   ),
+        //                 ],
+        //               ),
+        //             ],
+        //           ),
+        //         ),
 
+        //         // Assets / Collectibles bar
+        //         Container(
+        //           margin: EdgeInsets.all(15),
+        //           padding: EdgeInsets.all(10),
+        //           height: 50,
+        //           child: Row(
+        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //             children: <Widget>[
+        //               Text('Assets '),
+        //               IconButton(
+        //                 icon: Icon(Icons.add),
+        //                 onPressed: () {
+        //                   _showWalletSelectDialog(context);
+        //                 },
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+
+        //         Container(
+        //           height: 300,
+        //           child: ListView.builder(
+        //               itemBuilder: (ctx, idx) {
+        //                 return InkWell(
+        //                   onTap: () => selectCurrency(context, idx),
+        //                   child: ListTile(
+        //                     leading: Icon(Icons.attach_money),
+        //                     title:
+        //                     // Text('cointype'),
+        //                         Text(displayedWallet.coinTypes?.split(' ')[idx]??'unknow coinType'),
+        //                     trailing: Column(
+        //                       mainAxisAlignment: MainAxisAlignment.start,
+        //                       crossAxisAlignment: CrossAxisAlignment.end,
+                              
+        //                       children: <Widget>[
+        //                         Text(displayedWallet.coins?.split(' ')[idx] ?? 'null value'),                                
+        //                         Text(
+        //                             '\$ ${_fiatValue(displayedWallet.coinTypes?.split(' ')[idx] ?? null, displayedWallet.coins?.split(' ')[idx] ?? null, exchangeRate)}'),
+        //                       ],
+                              
+        //                     ),
+        //                   ),
+        //                 );
+        //               },
+        //               itemCount: displayedWallet.coinTypes?.split(' ')?.length ?? 0 ),
+        //         ),
+        //       ],
+        //     );
+        //   }
+        // });
+
+        //     return StreamBuilder<List<Wallet>>(
+        // stream: walletsStream,
+        // builder: (context, snapshot) {
+        //   if (!snapshot.hasData) {
+        //     return Column(
+        //       children: <Widget>[Text('Loading...')],
+        //     );
+        //   } else {
+            
+            
+            print('In WalletScreen(): WalletsIht.of(context).displayedName ${WalletsIht.of(context).displayedName}');
+            displayedName = WalletsIht.of(context).displayedName;
+            // print('In WalletScreen(): After assign displayedName from inherit: $displayedName') ; 
+             displayedWallet =
+                WalletsIht.of(context).wallets.firstWhere((wallet) => wallet.name == displayedName);
              print('In WalletScreen(): displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
+             print('In WalletScreen(): displayedWallet.coins: ${displayedWallet.coins}');
             return Column(
               children: <Widget>[
                 // Wallet Sum up
@@ -360,7 +469,8 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
               ],
             );
-          }
-        });
+          // }
+        // }
+        // );
   }
 }
