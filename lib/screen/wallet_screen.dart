@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet/screen/currency_screen.dart';
 
 import '../exchangerates.dart';
 import './tabs_main_screen.dart';
+
+import '../provider/wallets.dart';
 
 import 'dart:async';
 import '../models/wallet.dart';
@@ -11,6 +14,8 @@ import 'package:sqflite/sqflite.dart';
 import '../main.dart';
 
 /////////// Display dashboard ///////////
+// pending: overflow issue, wallet detail chart
+
 // Upper block title: Text('${displayedWallet.mainType}-Wallet')
 //
 // Upper block detail
@@ -92,32 +97,6 @@ class _WalletScreenState extends State<WalletScreen> {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-
-  // Future<List<Wallet>> getWallets() async {
-  //   final Database db = await database;
-  //   final List<Map<String, dynamic>> maps = await db.query('wallets');
-
-  //   List<Wallet> loadedWallets = List.generate(maps.length, (i) {
-  //     return Wallet(
-  //       name: maps[i]['name'],
-  //       id: maps[i]['id'],
-  //       mainType: maps[i]['mainType'],
-  //       mainAddress: maps[i]['mainAddress'],
-  //       method: maps[i]['method'],
-  //       mnemonic: maps[i]['mnemonic'],
-  //       mnemonicLength: maps[i]['mnemonicLength'],
-  //       seed: maps[i]['seed'],
-  //       seedHex: maps[i]['seedHex'],
-  //       bip44Wallet: maps[i]['bip44Wallet'],
-  //       coinTypes: maps[i]['coinTypes'],
-  //       coinAddresses: maps[i]['coinAddresses'],
-  //       coins: maps[i]['coins'],
-  //     );
-  //   });
-  //   this.wallets = loadedWallets;
-  //   // this.walletsStream = loadedWallets;
-  //   return loadedWallets;
-  // }
 
   Stream<List<Wallet>> getWalletsStream() async* {
     final Database db = await database;
@@ -373,15 +352,23 @@ class _WalletScreenState extends State<WalletScreen> {
         //       children: <Widget>[Text('Loading...')],
         //     );
         //   } else {
+
+            final walletsData = Provider.of<Wallets>(context);
+            final wallets = walletsData.wallets; 
+            displayedName = walletsData.displayedName;
+            final displayWallet = wallets.firstWhere((wallet) => wallet.name == displayedName);
+
+            print('In WalletScreen(): walletsData.displayedName ${walletsData.displayedName}');
+            print('In WalletScreen(): displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
+            print('In WalletScreen(): displayedWallet.coins: ${displayedWallet.coins}');
             
-            
-            print('In WalletScreen(): WalletsIht.of(context).displayedName ${WalletsIht.of(context).displayedName}');
-            displayedName = WalletsIht.of(context).displayedName;
-            // print('In WalletScreen(): After assign displayedName from inherit: $displayedName') ; 
-             displayedWallet =
-                WalletsIht.of(context).wallets.firstWhere((wallet) => wallet.name == displayedName);
-             print('In WalletScreen(): displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
-             print('In WalletScreen(): displayedWallet.coins: ${displayedWallet.coins}');
+            // print('In WalletScreen(): WalletsIht.of(context).displayedName ${WalletsIht.of(context).displayedName}');
+            // displayedName = WalletsIht.of(context).displayedName;
+            // // print('In WalletScreen(): After assign displayedName from inherit: $displayedName') ; 
+            //  displayedWallet =
+            //     WalletsIht.of(context).wallets.firstWhere((wallet) => wallet.name == displayedName);
+            //  print('In WalletScreen(): displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
+            //  print('In WalletScreen(): displayedWallet.coins: ${displayedWallet.coins}');
             return Column(
               children: <Widget>[
                 // Wallet Sum up
