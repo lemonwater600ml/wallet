@@ -27,16 +27,20 @@ class Wallets with ChangeNotifier {
     return _wallets.firstWhere((wallet) => wallet.name == _displayedName);
   }
 
+  
+
   void addWallet(Wallet newWallet) {
     _wallets.add(newWallet);
     notifyListeners();
   }
 
-
-
   void changeDisplayedName(String newDisplayedName) {
     _displayedName = newDisplayedName;
     notifyListeners();
+  }
+
+  void updataWallets(List<Wallet> newWallets) {
+    _wallets = newWallets;
   }
 
 }

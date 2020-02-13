@@ -188,14 +188,6 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
     // }
   }
 
-  void exportWalletsToProvider(context, List<Wallet> wallets) {
-    for (int i = 0; i < wallets.length; i++) {
-    Provider.of<Wallets>(context).addWallet(wallets[i]);
-    }
-    
-  }
-
-
 
   @override
   initState() {
@@ -210,16 +202,20 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
       // });
       //
       setDatabasePathAndOpen('wallets').then((_) {
+
         setState(() {
           walletsStream = getWalletsStream();
+          
         });
       });
-      print(
-          'In TabsScreen: "initStat" ask walletsStream from created DummyData');
+      // print(
+      //     'In TabsScreen: "initStat" ask walletsStream from created DummyData');
     }
   }
 
   Widget build(BuildContext context) {
+    
+    walletsStream = getWalletsStream();
     print('In TabsScreen: Build run');
     
     return StreamBuilder<List<Wallet>>(
@@ -233,11 +229,9 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
               // body: Text(data),
             );
           } else {
-            exportWalletsToProvider(context, snapshot.data);
-            displayedName = Provider.of<Wallets>(context).displayedName;
+            Provider.of<Wallets>(context).updataWallets(snapshot.data);
             wallets = Provider.of<Wallets>(context).wallets;
-            print('In TabsScreen: Number of wallets: ${wallets.length}');
-            // print('In TabsScreen: displayedName after check: $displayedName');
+            print('In TabsScreen StreamBuilder: Number of wallets: ${wallets.length}');
 
             return Scaffold(
               appBar: AppBar(
@@ -276,16 +270,16 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
                               },
                               leading: Icon(Icons.lock_outline),
                               title: Text(
-                                wallets[idx].name),
+                                wallets[idx]?.name?? 'unknown name'),
                                   // snapshot.data[idx]?.name ?? 'unknown name'),
                               trailing:
                                   Text(
-                                    wallets[idx].id),
+                                    wallets[idx]?.id ?? 'unknown id'),
                                     // snapshot.data[idx]?.id ?? 'unknown id'),
                             ),
                           );
                         },
-                        itemCount: wallets.length,
+                        itemCount: Provider.of<Wallets>(context).length,
                         // itemCount: snapshot.data.length,
                       ),
                     ),

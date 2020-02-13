@@ -78,17 +78,6 @@ class _WalletScreenState extends State<WalletScreen> {
     print('In WalletScreen() ====database opened===');
   }
 
-  Future<void> createDatabase(String databaseName) async {
-    final Future<Database> newDatabase = openDatabase(
-        join(await getDatabasesPath(), databaseName), onCreate: (db, version) {
-      return db.execute(
-        "CREATE TABLE wallets (name TEXT PRIMARY KEY, id TEXT, mainType TEXT, mainAddress TEXT, createMethod TEXT, mnemonic TEXT, seed TEXT, seedHex TEXT, bip44Wallet TEXT, coinTypes TEXT, coinAddresses TEXT, coins TEXT)",
-      );
-    }, version: 1);
-    this.database = newDatabase;
-    print('====database created===');
-  }
-
   Future<void> insertWallet(String tableName, Wallet wallet) async {
     final Database db = await database;
     await db.insert(
@@ -98,7 +87,7 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  Stream<List<Wallet>> getWalletsStream() async* {
+  Future<List<Wallet>> getWalletsFromSQLite() async {
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('wallets');
 
@@ -119,9 +108,7 @@ class _WalletScreenState extends State<WalletScreen> {
         coins: maps[i]['coins'],
       );
     });
-    // this.wallets = loadedWallets;
-    // this.walletsStream = loadedWallets;
-    yield loadedWallets;
+    return loadedWallets;
   }
 
   Future<void> _updateWallet(
@@ -141,20 +128,11 @@ class _WalletScreenState extends State<WalletScreen> {
   initState() {
     super.initState();
     setDatabasePathAndOpen('wallets').then((_){});
-    // if (walletsStream == null) {
-    //   setDatabasePathAndOpen('wallets').then((_) {
-    //     setState(() {
-    //       // getWallets();
-    //       walletsStream = getWalletsStream();
-    //     });
-    //   });
-    // }
-    // getWallets();
   }
 
   Widget build(BuildContext context) {
     final exchangeRate = EXCHANGERATES;
-    var displayedName;
+    // var displayedName;
 
     String fiatValueSum(String coinTypes, String coins, exchangeRate) {
       if (coinTypes == null || coins == null || exchangeRate == null) {
@@ -220,10 +198,14 @@ class _WalletScreenState extends State<WalletScreen> {
                     // print(
                     // 'displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
                     await _updateWallet(context, 'wallets', displayedWallet);
+                    Provider.of<Wallets>(context).updataWallets(await getWalletsFromSQLite());
                     print('_updateWallet completed');
                     // print('======== _updateWallet after adding asset =====');
                     // walletsStream = getWalletsStream();
                     print('In _updateWallet Befroe setState');
+
+                    // Provider.of<Wallets>(context).updataWallets(snapshot.data);
+                    
                     super.setState(() {});
                     Navigator.of(context).pop();
                     // print('======== pop =====');
@@ -236,142 +218,11 @@ class _WalletScreenState extends State<WalletScreen> {
         ),
       );
     }
-    
-    // print('In WalletScreen() displayedName : $displayedName');
-    // return StreamBuilder<List<Wallet>>(
-    //     stream: walletsStream,
-    //     builder: (context, snapshot) {
-    //       if (!snapshot.hasData) {
-    //         return Column(
-    //           children: <Widget>[Text('Loading...')],
-    //         );
-    //       } else {
-            
-            
-    //         print('In WalletScreen(): WalletsIht.of(context).displayedName ${WalletsIht.of(context).displayedName}');
-    //         displayedName = WalletsIht.of(context).displayedName;
-    //         // print('In WalletScreen(): After assign displayedName from inherit: $displayedName') ; 
-    //          displayedWallet =
-    //             snapshot.data.firstWhere((wallet) => wallet.name == displayedName);
-    //          print('In WalletScreen(): displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
-    //         return Column(
-    //           children: <Widget>[
-        //         // Wallet Sum up
-        //         Container(
-        //           decoration: BoxDecoration(
-        //             color: Theme.of(context).primaryColorLight,
-        //             borderRadius: BorderRadius.all(
-        //               Radius.circular(15),
-        //             ),
-        //           ),
-        //           height: 100,
-        //           margin: EdgeInsets.all(15),
-        //           padding: EdgeInsets.all(10),
-        //           child: Column(
-        //             mainAxisAlignment: MainAxisAlignment.start,
-        //             crossAxisAlignment: CrossAxisAlignment.start,
-        //             children: <Widget>[
-        //               Row(
-        //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //                 children: <Widget>[
-                          
-        //                   Text('${displayedWallet.mainType ?? 'unknown mainType'}-Wallet'),
-        //                   Icon(Icons.more_horiz)
-        //                 ],
-        //               ),
-        //               Text(displayedWallet.mainAddress ?? 'unknown address'),
-        //               Row(
-        //                 mainAxisAlignment: MainAxisAlignment.end,
-        //                 children: <Widget>[
-        //                   Text(
-        //                     '\$ ${fiatValueSum(displayedWallet.coinTypes, displayedWallet.coins, exchangeRate)}',
-        //                     // 'tttest',
-        //                   ),
-        //                 ],
-        //               ),
-        //             ],
-        //           ),
-        //         ),
-
-        //         // Assets / Collectibles bar
-        //         Container(
-        //           margin: EdgeInsets.all(15),
-        //           padding: EdgeInsets.all(10),
-        //           height: 50,
-        //           child: Row(
-        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //             children: <Widget>[
-        //               Text('Assets '),
-        //               IconButton(
-        //                 icon: Icon(Icons.add),
-        //                 onPressed: () {
-        //                   _showWalletSelectDialog(context);
-        //                 },
-        //               ),
-        //             ],
-        //           ),
-        //         ),
-
-        //         Container(
-        //           height: 300,
-        //           child: ListView.builder(
-        //               itemBuilder: (ctx, idx) {
-        //                 return InkWell(
-        //                   onTap: () => selectCurrency(context, idx),
-        //                   child: ListTile(
-        //                     leading: Icon(Icons.attach_money),
-        //                     title:
-        //                     // Text('cointype'),
-        //                         Text(displayedWallet.coinTypes?.split(' ')[idx]??'unknow coinType'),
-        //                     trailing: Column(
-        //                       mainAxisAlignment: MainAxisAlignment.start,
-        //                       crossAxisAlignment: CrossAxisAlignment.end,
-                              
-        //                       children: <Widget>[
-        //                         Text(displayedWallet.coins?.split(' ')[idx] ?? 'null value'),                                
-        //                         Text(
-        //                             '\$ ${_fiatValue(displayedWallet.coinTypes?.split(' ')[idx] ?? null, displayedWallet.coins?.split(' ')[idx] ?? null, exchangeRate)}'),
-        //                       ],
-                              
-        //                     ),
-        //                   ),
-        //                 );
-        //               },
-        //               itemCount: displayedWallet.coinTypes?.split(' ')?.length ?? 0 ),
-        //         ),
-        //       ],
-        //     );
-        //   }
-        // });
-
-        //     return StreamBuilder<List<Wallet>>(
-        // stream: walletsStream,
-        // builder: (context, snapshot) {
-        //   if (!snapshot.hasData) {
-        //     return Column(
-        //       children: <Widget>[Text('Loading...')],
-        //     );
-        //   } else {
-
-            // final walletsData = Provider.of<Wallets>(context);
-            // displayedName = walletsData.displayedName;
-            // if displayedName == null? assign first wallet
-            // if still null presents 0?
+  
             displayedWallet = Provider.of<Wallets>(context).displayedWallet();
-            // final wallets = walletsData.wallets; 
-            // final displayWallet = wallets.firstWhere((wallet) => wallet.name == displayedName);
-
-            // print('In WalletScreen(): walletsData.displayedName ${walletsData.displayedName}');
             print('In WalletScreen(): displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
             print('In WalletScreen(): displayedWallet.coins: ${displayedWallet.coins}');
             
-            // print('In WalletScreen(): WalletsIht.of(context).displayedName ${WalletsIht.of(context).displayedName}');
-            // displayedName = WalletsIht.of(context).displayedName;
-            // // print('In WalletScreen(): After assign displayedName from inherit: $displayedName') ; 
-            //  displayedWallet =
-            //     WalletsIht.of(context).wallets.firstWhere((wallet) => wallet.name == displayedName);
-            //  print('In WalletScreen(): displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
-            //  print('In WalletScreen(): displayedWallet.coins: ${displayedWallet.coins}');
             return Column(
               children: <Widget>[
                 // Wallet Sum up
