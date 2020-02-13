@@ -10,25 +10,25 @@ import 'package:sqflite/sqflite.dart';
 
 // import '../main.dart';
 
-class WalletsIht extends InheritedWidget {
-  String displayedName;
-  final List<Wallet> wallets;
-  WalletsIht({Widget child, this.displayedName, this.wallets})
-      : super(child: child);
+// class WalletsIht extends InheritedWidget {
+//   String displayedName;
+//   final List<Wallet> wallets;
+//   WalletsIht({Widget child, this.displayedName, this.wallets})
+//       : super(child: child);
 
-  @override
-  bool updateShouldNotify(WalletsIht oldWidget) {
-    if (wallets != oldWidget.wallets ||
-        displayedName != oldWidget.displayedName) {
-      print('WalletsIht detected change!!!!');
-    }
-    return wallets != oldWidget.wallets ||
-        displayedName != oldWidget.displayedName;
-  }
+//   @override
+//   bool updateShouldNotify(WalletsIht oldWidget) {
+//     if (wallets != oldWidget.wallets ||
+//         displayedName != oldWidget.displayedName) {
+//       print('WalletsIht detected change!!!!');
+//     }
+//     return wallets != oldWidget.wallets ||
+//         displayedName != oldWidget.displayedName;
+//   }
 
-  static WalletsIht of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType();
-}
+//   static WalletsIht of(BuildContext context) =>
+//       context.dependOnInheritedWidgetOfExactType();
+// }
 
 class InheritedDisplayedName extends InheritedWidget {
   final String displayedName;
@@ -54,7 +54,8 @@ class TabsMainScreen extends StatefulWidget {
 }
 
 class _TabsWalletScreenState extends State<TabsMainScreen> {
-  WalletsIht ihtWallets;
+
+  // WalletsIht ihtWallets;
 
   Future<Database> database;
   String displayedName;
@@ -176,7 +177,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
       );
     });
     yield loadedWallets;
-    this.ihtWallets = WalletsIht(wallets: loadedWallets);
+    // this.ihtWallets = WalletsIht(wallets: loadedWallets);
     this.wallets = loadedWallets;
 
     // print('In TabsScreen: Wallets.name in loadedWalletsFromInherited');
@@ -229,13 +230,15 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
                 title: Text('Wallet'),
                 centerTitle: true,
               ),
-              // body: WalletScreen(),
+              body: WalletScreen(),
 
-              body: WalletsIht(
-                wallets: wallets,
-                displayedName: displayedName,
-                child: WalletScreen(),
-              ),
+              // body: WalletsIht(
+              //   wallets: wallets,
+              //   displayedName: displayedName,
+              //   child: WalletScreen(),
+              // ),
+
+
               drawer: Drawer(
                 child: Column(
                   children: <Widget>[
