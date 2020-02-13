@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wallet/provider/wallets.dart';
 import '../models/wallet.dart';
 
 import './create_wallet_screen.dart';
@@ -30,22 +32,22 @@ import 'package:sqflite/sqflite.dart';
 //       context.dependOnInheritedWidgetOfExactType();
 // }
 
-class InheritedDisplayedName extends InheritedWidget {
-  final String displayedName;
-  InheritedDisplayedName({Widget child, this.displayedName})
-      : super(child: child);
+// class InheritedDisplayedName extends InheritedWidget {
+//   final String displayedName;
+//   InheritedDisplayedName({Widget child, this.displayedName})
+//       : super(child: child);
 
-  @override
-  bool updateShouldNotify(InheritedDisplayedName oldWidget) {
-    if (displayedName != oldWidget.displayedName) {
-      print('InheritedDisplayedName detected change!!!!');
-    }
-    return displayedName != oldWidget.displayedName;
-  }
+//   @override
+//   bool updateShouldNotify(InheritedDisplayedName oldWidget) {
+//     if (displayedName != oldWidget.displayedName) {
+//       print('InheritedDisplayedName detected change!!!!');
+//     }
+//     return displayedName != oldWidget.displayedName;
+//   }
 
-  static InheritedDisplayedName of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType();
-}
+//   static InheritedDisplayedName of(BuildContext context) =>
+//       context.dependOnInheritedWidgetOfExactType();
+// }
 
 class TabsMainScreen extends StatefulWidget {
   static const routeName = '/homepage';
@@ -186,6 +188,15 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
     // }
   }
 
+  void exportWalletsToProvider(context, List<Wallet> wallets) {
+    for (int i = 0; i < wallets.length; i++) {
+    Provider.of<Wallets>(context).addWallet(wallets[i]);
+    }
+    
+  }
+
+
+
   @override
   initState() {
     super.initState();
@@ -210,6 +221,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
 
   Widget build(BuildContext context) {
     print('In TabsScreen: Build run');
+    
     return StreamBuilder<List<Wallet>>(
         stream: walletsStream,
         builder: (context, snapshot) {
@@ -221,8 +233,10 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
               // body: Text(data),
             );
           } else {
-            displayedName ??= snapshot.data[0].name;
-            print('In TabsScreen: Number of wallets: ${snapshot.data.length}');
+            exportWalletsToProvider(context, snapshot.data);
+            displayedName = Provider.of<Wallets>(context).displayedName;
+            wallets = Provider.of<Wallets>(context).wallets;
+            print('In TabsScreen: Number of wallets: ${wallets.length}');
             // print('In TabsScreen: displayedName after check: $displayedName');
 
             return Scaffold(
@@ -237,8 +251,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
               //   displayedName: displayedName,
               //   child: WalletScreen(),
               // ),
-
-
+              
               drawer: Drawer(
                 child: Column(
                   children: <Widget>[
@@ -253,7 +266,8 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
                                     'displayedName before tap: ${displayedName}');
 
                                 setState(() {
-                                  displayedName = snapshot.data[idx].name;
+                                  Provider.of<Wallets>(context).changeDisplayedName(wallets[idx].name);
+                                  // displayedName = snapshot.data[idx].name;
                                 });
                                 print(
                                     'displayedName after tap: $displayedName');
@@ -262,13 +276,17 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
                               },
                               leading: Icon(Icons.lock_outline),
                               title: Text(
-                                  snapshot.data[idx]?.name ?? 'unknown name'),
+                                wallets[idx].name),
+                                  // snapshot.data[idx]?.name ?? 'unknown name'),
                               trailing:
-                                  Text(snapshot.data[idx]?.id ?? 'unknown id'),
+                                  Text(
+                                    wallets[idx].id),
+                                    // snapshot.data[idx]?.id ?? 'unknown id'),
                             ),
                           );
                         },
-                        itemCount: snapshot.data.length,
+                        itemCount: wallets.length,
+                        // itemCount: snapshot.data.length,
                       ),
                     ),
                     Expanded(

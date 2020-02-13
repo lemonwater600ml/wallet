@@ -353,12 +353,15 @@ class _WalletScreenState extends State<WalletScreen> {
         //     );
         //   } else {
 
-            final walletsData = Provider.of<Wallets>(context);
-            final wallets = walletsData.wallets; 
-            displayedName = walletsData.displayedName;
-            final displayWallet = wallets.firstWhere((wallet) => wallet.name == displayedName);
+            // final walletsData = Provider.of<Wallets>(context);
+            // displayedName = walletsData.displayedName;
+            // if displayedName == null? assign first wallet
+            // if still null presents 0?
+            displayedWallet = Provider.of<Wallets>(context).displayedWallet();
+            // final wallets = walletsData.wallets; 
+            // final displayWallet = wallets.firstWhere((wallet) => wallet.name == displayedName);
 
-            print('In WalletScreen(): walletsData.displayedName ${walletsData.displayedName}');
+            // print('In WalletScreen(): walletsData.displayedName ${walletsData.displayedName}');
             print('In WalletScreen(): displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
             print('In WalletScreen(): displayedWallet.coins: ${displayedWallet.coins}');
             
