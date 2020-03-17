@@ -248,7 +248,8 @@ class _WalletScreenState extends State<WalletScreen> {
                           Icon(Icons.more_horiz)
                         ],
                       ),
-                      Text(displayedWallet.mainAddress ?? 'unknown address'),
+                      Text(displayedWallet.mainAddress ?? 'unknown address',
+                      overflow: TextOverflow.fade,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[

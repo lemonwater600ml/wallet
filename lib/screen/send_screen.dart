@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
+import 'package:wallet/provider/wallets.dart';
 
 import '../dummy_data.dart';
 
@@ -18,9 +20,6 @@ class _SendScreenState extends State<SendScreen> {
     super.initState();
   }
   final _formKey = GlobalKey<FormState>();
-  final exchangeRate = EXCHANGERATES;
-  final selectedWallet =
-      DUMMY_WALLETS.firstWhere((wallet) => wallet.id == 'eth1');
 
   Future scan () async {
     
@@ -36,6 +35,7 @@ class _SendScreenState extends State<SendScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var displayedWallet = Provider.of<Wallets>(context).displayedWallet();
     return Scaffold(
       appBar: AppBar(
         title: Text('Send'),
@@ -58,7 +58,7 @@ class _SendScreenState extends State<SendScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text('${selectedWallet.type} amount'),
+                          Text('${displayedWallet.coinTypes} amount'),
                           TextFormField(
                             decoration: InputDecoration.collapsed(
                                 hintText: 'Please input amount'),
