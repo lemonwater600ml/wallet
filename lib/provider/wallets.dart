@@ -27,8 +27,6 @@ class Wallets with ChangeNotifier {
     return _wallets.firstWhere((wallet) => wallet.name == _displayedName);
   }
 
-  
-
   void addWallet(Wallet newWallet) {
     _wallets.add(newWallet);
     notifyListeners();

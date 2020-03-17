@@ -1,4 +1,8 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wallet/provider/wallets.dart';
 
 import './send_screen.dart';
 import './receive_screen.dart';
@@ -6,13 +10,16 @@ import '../dummy_data.dart';
 
 // This can be passed from wallet_screen
 class CurrencyScreen extends StatelessWidget {
-  String fiatValueSum(currenciesCoinNumber, exchangeRate) {
+  String fiatValueSum(coinTypes, coins, exchangeRate) {
     double sum = 0;
-    currenciesCoinNumber.forEach(
-      (map) {
-        sum += exchangeRate[map['currency']] * map['coinNumber'];
-      },
-    );
+    
+    List<String> coinsList= coins.split(" ").toList();
+    List<String> coinTypesList = coinTypes.split(" ").toList();
+    
+    for (int i = 0; i < coinsList.length; i++){
+      sum += double.parse(coinsList[i]) * exchangeRate[coinTypesList[i]];
+    }
+    
     return sum.toString();
   }
 
@@ -20,10 +27,13 @@ class CurrencyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // The following four variables can be passed from wallet_screen
+    var displayedWallet = Provider.of<Wallets>(context).displayedWallet();
+    
     final exchangeRate = EXCHANGERATES;
-    final selectedWalletIdx = 'ETH1';
-    final selectedWallet =
-        DUMMY_WALLETS.firstWhere((wallet) => wallet.id == selectedWalletIdx);
+    // int currenciesIdx;
+    // final selectedWalletIdx = 'ETH1';
+    // final selectedWallet =
+    //     DUMMY_WALLETS.firstWhere((wallet) => wallet.id == selectedWalletIdx);
     final receivedRecords = TRANSACTIONS_RCV;
     final sendRecords = TRANSACTIONS_SND;
     // final List<Map<String, Object>> receivedRecords = TRANSACTIONS_RCV;
@@ -59,7 +69,7 @@ class CurrencyScreen extends StatelessWidget {
                         Icon(Icons.monetization_on, size: 50,),
                         Text('Total amount in the wallet '),
                         Text(
-                            '~=\$ ${fiatValueSum(selectedWallet.coinsNumber, exchangeRate)} USD',),
+                            '~=\$ ${fiatValueSum(displayedWallet.coinTypes, displayedWallet.coins, exchangeRate)} USD',),
                         
                       ],
                     )),
@@ -70,7 +80,7 @@ class CurrencyScreen extends StatelessWidget {
                     // height: 100,
                     child: TabBar(tabs: [
                       Tab(text: "Receive"),
-                      Tab(text: "send"),
+                      Tab(text: "send")
                     ])),
                 Divider(),
                 Container(
@@ -84,14 +94,14 @@ class CurrencyScreen extends StatelessWidget {
                             onTap: () => {},
                             leading: Icon(Icons.monetization_on),
                             title: Text(receivedRecords[idx]['type']),
-                            subtitle: Text('${                              receivedRecords[idx]['from'].toString().substring(1, 6)}...${receivedRecords[idx]['from'].toString().substring(receivedRecords[idx]['from'].toString().length-6)}',
+                            subtitle: Text('${receivedRecords[idx]['from'].toString().substring(1, 6)}...${receivedRecords[idx]['from'].toString().substring(receivedRecords[idx]['from'].toString().length-6)}',
                             ),
                             trailing: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: <Widget>[
                                 Text(
-                                  '+ ${receivedRecords[idx]['amount'].toString()} ${selectedWallet.type}',
+                                  '+ ${receivedRecords[idx]['amount'].toString()} ${displayedWallet.coinTypes}',
                                 ),
                                 Text(receivedRecords[idx]['time'].toString()),
                                 
@@ -116,7 +126,7 @@ class CurrencyScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: <Widget>[
                                 Text(
-                                  '- ${sendRecords[idx]['amount'].toString()} ${selectedWallet.type}',
+                                  '- ${sendRecords[idx]['amount'].toString()} ${displayedWallet.coinTypes}',
                                 ),
                                 Text(sendRecords[idx]['time'].toString()),
                                 

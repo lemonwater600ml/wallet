@@ -16,12 +16,12 @@ import '../main.dart';
 /////////// Display dashboard ///////////
 // pending: overflow issue, wallet detail chart
 
-// Upper block title: Text('${displayedWallet.mainType}-Wallet')
+// Wallet info title: Text('${displayedWallet.mainType}-Wallet')
 //
-// Upper block detail
+// Wallet info detail
 //
-// Upper block address: Text(displayedWallet.mainAddress),
-// Upper block sum: '\$ ${fiatValueSum(displayedWallet.coinTypes, displayedWallet.coins, exchangeRate).toString()}'),
+// Wallet info address: Text(displayedWallet.mainAddress),
+// Wallet info sum: '\$ ${fiatValueSum(displayedWallet.coinTypes, displayedWallet.coins, exchangeRate).toString()}'),
 // ListTile coin name: Text(displayedWallet.coinTypes.split(' ')[idx]),
 // ListTile coin number: Text(displayedWallet.coins.split(' ')[idx].toString()),
 // ListTile fiatValue:  Text('\$ ${_fiatValue(displayedWallet.coinTypes.split(' ')[idx], displayedWallet.coins.split(' ')[idx] ,exchangeRate)}'),
@@ -72,8 +72,8 @@ class _WalletScreenState extends State<WalletScreen> {
   // }
 
   Future<void> setDatabasePathAndOpen(String databaseName) async {
-    final Future<Database> newDatabase = openDatabase(
-        join(await getDatabasesPath(), databaseName));
+    final Future<Database> newDatabase =
+        openDatabase(join(await getDatabasesPath(), databaseName));
     this.database = newDatabase;
     print('In WalletScreen() ====database opened===');
   }
@@ -127,7 +127,7 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   initState() {
     super.initState();
-    setDatabasePathAndOpen('wallets').then((_){});
+    setDatabasePathAndOpen('wallets').then((_) {});
   }
 
   Widget build(BuildContext context) {
@@ -149,9 +149,9 @@ class _WalletScreenState extends State<WalletScreen> {
 
     String _fiatValue(
         String coinType, String coinNumber, Map<String, double> echangeRate) {
-          if (coinType == null || coinNumber == null || exchangeRate == null) {
-            return 'unknown value';
-          }
+      if (coinType == null || coinNumber == null || exchangeRate == null) {
+        return 'unknown value';
+      }
 
       var coinNumberDouble = double.parse(coinNumber);
       double result = exchangeRate[coinType] * coinNumberDouble;
@@ -162,157 +162,190 @@ class _WalletScreenState extends State<WalletScreen> {
       showDialog(
         context: context,
         barrierDismissible: true,
-        builder: (_) => StatefulBuilder(
-          
-          builder: (context, setState) {
-            return AlertDialog(
-              content: DropdownButton<String>(
-                onChanged: (newValue) {
-                  
-                  setState(() {
-                    dropdownValue = newValue;
-                  });
+        builder: (_) => StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            content: DropdownButton<String>(
+              onChanged: (newValue) {
+                setState(() {
+                  dropdownValue = newValue;
+                });
+              },
+              value: dropdownValue,
+              items: coinList.map<DropdownMenuItem<String>>(
+                (String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
                 },
-                value: dropdownValue,
-                items: coinList.map<DropdownMenuItem<String>>(
-                  (String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  },
-                ).toList(),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  onPressed: () async {
-                    if (displayedWallet.coinTypes == null) {
-                      displayedWallet.coinTypes = dropdownValue;
-                      displayedWallet.coins = "0";
-                    } else {
+              ).toList(),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () async {
+                  if (displayedWallet.coinTypes == null) {
+                    displayedWallet.coinTypes = dropdownValue;
+                    displayedWallet.coins = "0";
+                  } else {
                     displayedWallet.coinTypes =
                         displayedWallet.coinTypes + " " + dropdownValue;
                     displayedWallet.coins = displayedWallet.coins + " " + "0";
-                    }
-                    print('concat completed');
-                    // print(
-                    // 'displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
-                    await _updateWallet(context, 'wallets', displayedWallet);
-                    Provider.of<Wallets>(context).updataWallets(await getWalletsFromSQLite());
-                    print('_updateWallet completed');
-                    // print('======== _updateWallet after adding asset =====');
-                    // walletsStream = getWalletsStream();
-                    print('In _updateWallet Befroe setState');
+                  }
+                  print('concat completed');
+                  // print(
+                  // 'displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
+                  await _updateWallet(context, 'wallets', displayedWallet);
+                  Provider.of<Wallets>(context)
+                      .updataWallets(await getWalletsFromSQLite());
+                  print('_updateWallet completed');
+                  // print('======== _updateWallet after adding asset =====');
+                  // walletsStream = getWalletsStream();
+                  print('In _updateWallet Befroe setState');
 
-                    // Provider.of<Wallets>(context).updataWallets(snapshot.data);
-                    
-                    super.setState(() {});
-                    Navigator.of(context).pop();
-                    // print('======== pop =====');
-                  },
-                  child: Text('OK'),
-                )
-              ],
-            );
-          }
-        ),
+                  // Provider.of<Wallets>(context).updataWallets(snapshot.data);
+
+                  super.setState(() {});
+                  Navigator.of(context).pop();
+                  // print('======== pop =====');
+                },
+                child: Text('OK'),
+              )
+            ],
+          );
+        }),
       );
     }
-  
-            displayedWallet = Provider.of<Wallets>(context).displayedWallet();
-            print('In WalletScreen(): displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
-            print('In WalletScreen(): displayedWallet.coins: ${displayedWallet.coins}');
-            
-            return Column(
-              children: <Widget>[
-                // Wallet Sum up
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColorLight,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
+
+    displayedWallet = Provider.of<Wallets>(context).displayedWallet();
+    print(
+        'In WalletScreen(): displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
+    print('In WalletScreen(): displayedWallet.coins: ${displayedWallet.coins}');
+
+    return Column(
+      children: <Widget>[
+        // Wallet Sum up
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColorLight,
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+          height: 100,
+          margin: EdgeInsets.all(15),
+          padding: EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                      '${displayedWallet.mainType ?? 'unknown mainType'}-Wallet'),
+                  IconButton(
+                    icon: Icon(Icons.more_horiz),
+                    onPressed: () {
+                      
+                        return showDialog<void>(
+                          context: context,
+                          barrierDismissible: false, // user must tap button!
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Wallet information'),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    Text('Name: ${displayedWallet.name.toString() ?? 'unknown'}', overflow: TextOverflow.fade,),
+                                    Text('Id: ${displayedWallet.id ?? 'unknown'}', overflow: TextOverflow.fade,),
+                                    Text('Address: ${displayedWallet.mainAddress ?? 'unknown'}', overflow: TextOverflow.fade,),
+                                    Text('Seed: ${displayedWallet.seed ?? 'unknown'}', overflow: TextOverflow.fade,),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text('OK'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      
+                    },
+                  ),
+                ],
+              ),
+              Text(
+                displayedWallet.mainAddress ?? 'unknown address',
+                overflow: TextOverflow.fade,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Text(
+                    '\$ ${fiatValueSum(displayedWallet.coinTypes, displayedWallet.coins, exchangeRate)}',
+                    // 'tttest',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // Assets / Collectibles bar
+        Container(
+          margin: EdgeInsets.all(15),
+          padding: EdgeInsets.all(10),
+          height: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text('Assets '),
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  _showWalletSelectDialog(context);
+                },
+              ),
+            ],
+          ),
+        ),
+
+        Container(
+          height: 300,
+          child: ListView.builder(
+              itemBuilder: (ctx, idx) {
+                return InkWell(
+                  onTap: () => selectCurrency(context, idx),
+                  child: ListTile(
+                    leading: Icon(Icons.attach_money),
+                    title:
+                        // Text('cointype'),
+                        Text(displayedWallet.coinTypes?.split(' ')[idx] ??
+                            'unknow coinType'),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Text(displayedWallet.coins?.split(' ')[idx] ??
+                            'null value'),
+                        Text(
+                            '\$ ${_fiatValue(displayedWallet.coinTypes?.split(' ')[idx] ?? null, displayedWallet.coins?.split(' ')[idx] ?? null, exchangeRate)}'),
+                      ],
                     ),
                   ),
-                  height: 100,
-                  margin: EdgeInsets.all(15),
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          
-                          Text('${displayedWallet.mainType ?? 'unknown mainType'}-Wallet'),
-                          Icon(Icons.more_horiz)
-                        ],
-                      ),
-                      Text(displayedWallet.mainAddress ?? 'unknown address',
-                      overflow: TextOverflow.fade,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Text(
-                            '\$ ${fiatValueSum(displayedWallet.coinTypes, displayedWallet.coins, exchangeRate)}',
-                            // 'tttest',
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Assets / Collectibles bar
-                Container(
-                  margin: EdgeInsets.all(15),
-                  padding: EdgeInsets.all(10),
-                  height: 50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text('Assets '),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          _showWalletSelectDialog(context);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-
-                Container(
-                  height: 300,
-                  child: ListView.builder(
-                      itemBuilder: (ctx, idx) {
-                        return InkWell(
-                          onTap: () => selectCurrency(context, idx),
-                          child: ListTile(
-                            leading: Icon(Icons.attach_money),
-                            title:
-                            // Text('cointype'),
-                                Text(displayedWallet.coinTypes?.split(' ')[idx]??'unknow coinType'),
-                            trailing: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              
-                              children: <Widget>[
-                                Text(displayedWallet.coins?.split(' ')[idx] ?? 'null value'),                                
-                                Text(
-                                    '\$ ${_fiatValue(displayedWallet.coinTypes?.split(' ')[idx] ?? null, displayedWallet.coins?.split(' ')[idx] ?? null, exchangeRate)}'),
-                              ],
-                              
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: displayedWallet.coinTypes?.split(' ')?.length ?? 0 ),
-                ),
-              ],
-            );
-          // }
-        // }
-        // );
+                );
+              },
+              itemCount: displayedWallet.coinTypes?.split(' ')?.length ?? 0),
+        ),
+      ],
+    );
+    // }
+    // }
+    // );
   }
 }
