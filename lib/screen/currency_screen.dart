@@ -28,6 +28,7 @@ class CurrencyScreen extends StatelessWidget {
 
     var walletTransactions =
         Provider.of<WalletTransactions>(context).walletTransactions;
+    print("walletTransactions.length: ${walletTransactions.length}");
 
     final exchangeRate = EXCHANGERATES;
     // int currenciesIdx;
@@ -80,68 +81,68 @@ class CurrencyScreen extends StatelessWidget {
                     )),
                 Divider(),
 
-                Container(
-                    constraints: BoxConstraints.expand(height: 30),
-                    // height: 100,
-                    child: TabBar(
-                        tabs: [Tab(text: "Receive"), Tab(text: "send")])),
-                Divider(),
-                Container(
-                  height: 350,
-                  child: TabBarView(children: [
-                    //
-                    ListView.builder(
-                      itemBuilder: (ctx, idx) {
-                        return InkWell(
-                          child: ListTile(
-                            onTap: () => {},
-                            leading: Icon(Icons.monetization_on),
-                            title: Text(receivedRecords[idx]['type']),
-                            subtitle: Text(
-                              '${receivedRecords[idx]['from'].toString().substring(1, 6)}...${receivedRecords[idx]['from'].toString().substring(receivedRecords[idx]['from'].toString().length - 6)}',
-                            ),
-                            trailing: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Text(
-                                  '+ ${receivedRecords[idx]['amount'].toString()} ${displayedWallet.coinTypes}',
-                                ),
-                                Text(receivedRecords[idx]['time'].toString()),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: receivedRecords.length,
-                    ),
-                    ListView.builder(
-                      itemBuilder: (ctx, idx) {
-                        return InkWell(
-                          child: ListTile(
-                            onTap: () => {},
-                            leading: Icon(Icons.monetization_on),
-                            title: Text(sendRecords[idx]['type']),
-                            subtitle: Text(
-                              '${sendRecords[idx]['to'].toString().substring(1, 6)}...${sendRecords[idx]['to'].toString().substring(sendRecords[idx]['from'].toString().length - 6)}',
-                            ),
-                            trailing: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Text(
-                                  '- ${sendRecords[idx]['amount'].toString()} ${displayedWallet.coinTypes}',
-                                ),
-                                Text(sendRecords[idx]['time'].toString()),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: sendRecords.length,
-                    ),
-                  ]),
-                )
+                // Container(
+                //     constraints: BoxConstraints.expand(height: 30),
+                //     // height: 100,
+                //     child: TabBar(
+                //         tabs: [Tab(text: "Receive"), Tab(text: "send")])),
+                // Divider(),
+                // Container(
+                //   height: 350,
+                //   child: TabBarView(children: [
+                //     //
+                //     ListView.builder(
+                //       itemBuilder: (ctx, idx) {
+                //         return InkWell(
+                //           child: ListTile(
+                //             onTap: () => {},
+                //             leading: Icon(Icons.monetization_on),
+                //             title: Text(receivedRecords[idx]['type']),
+                //             subtitle: Text(
+                //               '${receivedRecords[idx]['from'].toString().substring(1, 6)}...${receivedRecords[idx]['from'].toString().substring(receivedRecords[idx]['from'].toString().length - 6)}',
+                //             ),
+                //             trailing: Column(
+                //               mainAxisAlignment: MainAxisAlignment.center,
+                //               crossAxisAlignment: CrossAxisAlignment.end,
+                //               children: <Widget>[
+                //                 Text(
+                //                   '+ ${receivedRecords[idx]['amount'].toString()} ${displayedWallet.coinTypes}',
+                //                 ),
+                //                 Text(receivedRecords[idx]['time'].toString()),
+                //               ],
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //       itemCount: receivedRecords.length,
+                //     ),
+                //     ListView.builder(
+                //       itemBuilder: (ctx, idx) {
+                //         return InkWell(
+                //           child: ListTile(
+                //             onTap: () => {},
+                //             leading: Icon(Icons.monetization_on),
+                //             title: Text(sendRecords[idx]['type']),
+                //             subtitle: Text(
+                //               '${sendRecords[idx]['to'].toString().substring(1, 6)}...${sendRecords[idx]['to'].toString().substring(sendRecords[idx]['from'].toString().length - 6)}',
+                //             ),
+                //             trailing: Column(
+                //               mainAxisAlignment: MainAxisAlignment.center,
+                //               crossAxisAlignment: CrossAxisAlignment.end,
+                //               children: <Widget>[
+                //                 Text(
+                //                   '- ${sendRecords[idx]['amount'].toString()} ${displayedWallet.coinTypes}',
+                //                 ),
+                //                 Text(sendRecords[idx]['time'].toString()),
+                //               ],
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //       itemCount: sendRecords.length,
+                //     ),
+                //   ]),
+                // )
               ],
             )
           ],

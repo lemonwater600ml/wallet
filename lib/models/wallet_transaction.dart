@@ -1,13 +1,15 @@
 import 'package:flutter/foundation.dart';
 
 class WalletTransaction {
+  
+
   final String chain;
   final String status;
-  final int index;
+  final int idx;
   final String hash;
   final double value;
-  final String from;
-  final String to;
+  final String from_acc;
+  final String to_acc;
   final String date;
   final String datetime;
   final int timestamp;
@@ -26,11 +28,11 @@ class WalletTransaction {
   WalletTransaction({
       this.chain,
       this.status,
-      this.index,
+      this.idx,
       this.hash,
       this.value,
-      this.from,
-      this.to,
+      this.from_acc,
+      this.to_acc,
       this.date,
       this.datetime,
       this.timestamp,
@@ -47,14 +49,14 @@ class WalletTransaction {
       this.coinIdx});
 
       Map<String, dynamic> toMap() {
-        return {
+        return { 
       'chain': chain,
       'status': status,
-      'index': index,
+      'idx': idx,
       'hash': hash,
       'value': value,
-      'from': from,
-      'to': to,
+      'from_acc': from_acc,
+      'to_acc': to_acc,
       'date': date,
       'datetime': datetime,
       'timestamp': timestamp,
@@ -63,7 +65,7 @@ class WalletTransaction {
       'gas': gas,
       'gas_price': gas_price,
       'gas_used': gas_used,
-      'this.nonce': nonce,
+      'nonce': nonce,
       'confirmations': confirmations,
       'token_transfers': token_transfers,
       'input': input,

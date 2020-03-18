@@ -38,6 +38,7 @@ class Wallets with ChangeNotifier {
 
   void updataWallets(List<Wallet> newWallets) {
     _wallets = newWallets;
+    // notifyListeners();
   }
 
 }

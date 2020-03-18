@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet/provider/wallet_transactions.dart';
 import '../models/wallet_transaction.dart';
 import 'package:wallet/provider/wallets.dart';
 import '../models/wallet.dart';
@@ -64,6 +65,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
   List<Wallet> wallets;
   Stream<List<Wallet>> walletsStream;
   Wallet displayedWallet;
+  List<WalletTransaction> walletTransactions;
 
   // final List<Map<String, Object>> _pages = [
   //   {
@@ -136,11 +138,11 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         // rec
         chain: 'chain1',
         status: 'completed',
-        index: 1,
-        hash: '0xffe',
+        idx: 1,
+        hash: '0xhash1',
         value: 3,
-        from: '0xf3257b324df',
-        to: '0xTe34Gder1234567890',
+        from_acc: '0xf3257b324df',
+        to_acc: '0xTe34Gder1234567890',
         date: '2020-03-11 01:12:34 UTC',
         datetime: '2020-03-11 01:12:34 UTC',
         timestamp: 123456789,
@@ -160,11 +162,11 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         // rec
         chain: 'chain2',
         status: 'completed',
-        index: 2,
-        hash: '0xffe',
+        idx: 2,
+        hash: '0xhash2',
         value: 5,
-        from: '0xf3257b324df',
-        to: '0xTe34Gder1234567890',
+        from_acc: '0xf3257b324df',
+        to_acc: '0xTe34Gder1234567890',
         date: '2020-03-12 01:12:34 UTC',
         datetime: '2020-03-12 01:12:34 UTC',
         timestamp: 123456789,
@@ -184,11 +186,11 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         // rec
         chain: 'chain3',
         status: 'completed',
-        index: 2,
-        hash: '0xffe',
+        idx: 2,
+        hash: '0xhash3',
         value: 7,
-        from: '0xf3257b324df',
-        to: '0xTe34Gder1234567890',
+        from_acc: '0xf3257b324df',
+        to_acc: '0xTe34Gder1234567890',
         date: '2020-03-13 01:12:34 UTC',
         datetime: '2020-03-13 01:12:34 UTC',
         timestamp: 123456789,
@@ -208,11 +210,11 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         // rec
         chain: 'chain2',
         status: 'completed',
-        index: 4,
-        hash: '0xffe',
+        idx: 4,
+        hash: '0xhash4',
         value: 2,
-        from: '0xf3257b324df',
-        to: '0xTe34Gder1234567890',
+        from_acc: '0xf3257b324df',
+        to_acc: '0xTe34Gder1234567890',
         date: '2020-03-14 01:12:34 UTC',
         datetime: '2020-03-14 01:12:34 UTC',
         timestamp: 123456789,
@@ -232,11 +234,11 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         // snd
         chain: 'chain5',
         status: 'completed',
-        index: 2,
-        hash: '0xffe',
+        idx: 2,
+        hash: '0xhash5',
         value: 0.1,
-        from: '0xTe34Gder1234567890',
-        to: 'sendAdd1',
+        from_acc: '0xTe34Gder1234567890',
+        to_acc: 'sendAdd1',
         date: '2020-03-16 01:12:34 UTC',
         datetime: '2020-03-16 01:12:34 UTC',
         timestamp: 123456789,
@@ -253,14 +255,13 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         coinIdx: 0,
       ),
       WalletTransaction(
-        // snd
         chain: 'chain6',
         status: 'completed',
-        index: 2,
-        hash: '0xffe',
+        idx: 2,
+        hash: '0xhash6',
         value: 0.2,
-        from: '0xTe34Gder1234567890',
-        to: 'sendAdd2',
+        from_acc: '0xTe34Gder1234567890',
+        to_acc: 'sendAdd2',
         date: '2020-03-17 01:12:34 UTC',
         datetime: '2020-03-17 01:12:34 UTC',
         timestamp: 123456789,
@@ -287,7 +288,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         "CREATE TABLE wallets (name TEXT PRIMARY KEY, id TEXT, mainType TEXT, mainAddress TEXT, createMethod TEXT, mnemonic TEXT, seed TEXT, seedHex TEXT, bip44Wallet TEXT, coinTypes TEXT, coinAddresses TEXT, coins TEXT)",
       );
       await db.execute(
-        "CREATE TABLE transactions (chain TEXT, status TEXT, index TEXT, hash TEXT, value REAL, from TEXT, to TEXT, date TEXT, datetime TEXT, timestamp INTEGER, block_hash TEXT, block_number INTEGER, gas INTEGER, gas_price REAL, gas_used INTEGER, nonce INTEGER, confirmations INTEGER, token_transfers TEXT, input TEXT, walletId TEXT, coinIdx INTEGER)",
+        "CREATE TABLE transactions (chain TEXT, status TEXT, idx INTEGER, hash TEXT PRIMARY KEY, value REAL, from_acc TEXT, to_acc TEXT, date TEXT, datetime TEXT, timestamp INTEGER, block_hash TEXT, block_number INTEGER, gas INTEGER, gas_price REAL, gas_used INTEGER, nonce INTEGER, confirmations INTEGER, token_transfers TEXT, input TEXT, walletId TEXT, coinIdx INTEGER)",
       );
     }, version: 1);
 
@@ -295,15 +296,61 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
     print('====TABLE wallets created===');
     print('====TABLE transactions created===');
 
+    Database db = await database;
     for (var i = 0; i < dummyWallets.length; i++) {
-      await insertWallet('wallets', dummyWallets[i]);
+      await db.insert(
+        'wallets',
+        dummyWallets[i].toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+
+      // await insertWallet('wallets', dummyWallets[i]);
     }
 
     for (var i = 0; i < dummyTransactions.length; i++) {
-      Database db = await database;
-      db.insert('transactions', dummyTransactions[i].toMap(),
+      // Database db = await database;
+      await db.insert('transactions', dummyTransactions[i].toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace);
+          
     }
+    print("dummyTransactions.length: ${dummyTransactions.length}");
+    
+  }
+
+  Future<void> queryWalletTransactions(context) async {
+    Database db = await database;
+    final List<Map<String, dynamic>> m = await db.query('transactions');
+
+    print("m.length: ${m.length}");
+
+    List<WalletTransaction> loadedWTs = List.generate(m.length, (i) {
+      return WalletTransaction(
+        chain: m[i]['chain'],
+        status: m[i]['status'],
+        idx: m[i]['idx'],
+        hash: m[i]['hash'],
+        value: m[i]['value'],
+        from_acc: m[i]['from_acc'],
+        to_acc: m[i]['to_acc'],
+        date: m[i]['date'],
+        datetime: m[i]['datetime'],
+        timestamp: m[i]['timestamp'],
+        block_hash: m[i]['block_hash'],
+        block_number: m[i]['block_number'],
+        gas: m[i]['gas'],
+        gas_price: m[i]['gas_price'],
+        gas_used: m[i]['gas_used'],
+        nonce: m[i]['nonce'],
+        confirmations: m[i]['confirmations'],
+        token_transfers: m[i]['token_transfers'],
+        input: m[i]['input'],
+        walletId: m[i]['walletId'],
+        coinIdx: m[i]['coinIdx'],
+      );
+    });
+
+    Provider.of<WalletTransactions>(context).updateWalletTransactions(loadedWTs);
+    print("======In TabMainScreen: update WalletTransactions provider");
   }
 
   // Future<void> createDatabase(String databaseName) async {
@@ -350,6 +397,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
     yield loadedWallets;
     // this.ihtWallets = WalletsIht(wallets: loadedWallets);
     this.wallets = loadedWallets;
+    
 
     // print('In TabsScreen: Wallets.name in loadedWalletsFromInherited');
     // for (var i = 0; i < ihtWallets.wallets.length; i++) {
@@ -362,14 +410,14 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
     super.initState();
     if (walletsStream == null) {
       ////////////// Need to clean Dummy Data and create and empty homepage (empty wallet)
-      // createDummyData().then((_) {
-      //   setState(() {
-      //     walletsStream = getWalletsStream();
-      //   });
-      //   print('In TabsScreen: createDummyData script done!');
-      // });
-      //
-      setDatabasePathAndOpen('wallets').then((_) {
+      createDummyData().then((_) {
+        setState(() {
+          walletsStream = getWalletsStream();
+        });
+        print('In TabsScreen: createDummyData script done!');
+      });
+
+      setDatabasePathAndOpen('wallets').then((_) async {
         setState(() {
           walletsStream = getWalletsStream();
         });
@@ -396,6 +444,8 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
           } else {
             Provider.of<Wallets>(context).updataWallets(snapshot.data);
             wallets = Provider.of<Wallets>(context).wallets;
+            queryWalletTransactions(context);
+
             print(
                 'In TabsScreen StreamBuilder: Number of wallets: ${wallets.length}');
 

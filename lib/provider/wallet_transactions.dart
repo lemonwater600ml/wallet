@@ -18,4 +18,9 @@ class WalletTransactions with ChangeNotifier {
     
   }
 
+  void updateWalletTransactions(List<WalletTransaction> walletTransactions){
+    _walletTransactions = walletTransactions;
+    // notifyListeners();
+  }
+
 }
