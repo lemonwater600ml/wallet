@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/transection.dart';
+import '../models/wallet_transaction.dart';
 import 'package:wallet/provider/wallets.dart';
 import '../models/wallet.dart';
 
@@ -132,7 +132,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
     ];
 
     final dummyTransactions = [
-      Transaction(
+      WalletTransaction(
         // rec
         chain: 'chain1',
         status: 'completed',
@@ -156,7 +156,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         walletId: 'ETH1',
         coinIdx: 0,
       ),
-      Transaction(
+      WalletTransaction(
         // rec
         chain: 'chain2',
         status: 'completed',
@@ -180,7 +180,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         walletId: 'ETH1',
         coinIdx: 0,
       ),
-      Transaction(
+      WalletTransaction(
         // rec
         chain: 'chain3',
         status: 'completed',
@@ -204,7 +204,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         walletId: 'ETH1',
         coinIdx: 0,
       ),
-      Transaction(
+      WalletTransaction(
         // rec
         chain: 'chain2',
         status: 'completed',
@@ -228,15 +228,15 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         walletId: 'ETH1',
         coinIdx: 0,
       ),
-      Transaction(
+      WalletTransaction(
         // snd
         chain: 'chain5',
         status: 'completed',
         index: 2,
         hash: '0xffe',
         value: 0.1,
-        from: '0xf3257b324df',
-        to: '0xTe34Gder1234567890',
+        from: '0xTe34Gder1234567890',
+        to: 'sendAdd1',
         date: '2020-03-16 01:12:34 UTC',
         datetime: '2020-03-16 01:12:34 UTC',
         timestamp: 123456789,
@@ -252,15 +252,15 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
         walletId: 'ETH1',
         coinIdx: 0,
       ),
-      Transaction(
+      WalletTransaction(
         // snd
         chain: 'chain6',
         status: 'completed',
         index: 2,
         hash: '0xffe',
         value: 0.2,
-        from: '0xf3257b324df',
-        to: '0xTe34Gder1234567890',
+        from: '0xTe34Gder1234567890',
+        to: 'sendAdd2',
         date: '2020-03-17 01:12:34 UTC',
         datetime: '2020-03-17 01:12:34 UTC',
         timestamp: 123456789,

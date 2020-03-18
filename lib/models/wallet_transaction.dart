@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-class Transaction {
+class WalletTransaction {
   final String chain;
   final String status;
   final int index;
@@ -23,7 +23,7 @@ class Transaction {
   final String walletId;
   final int coinIdx;
 
-  Transaction({
+  WalletTransaction({
       this.chain,
       this.status,
       this.index,

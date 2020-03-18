@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/wallet.dart';
 
 class Wallets with ChangeNotifier {

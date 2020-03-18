@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet/models/transections.dart';
 
 import './provider/wallets.dart';
+import './provider/wallet_transactions.dart';
 
 import './screen/wallet_screen.dart';
 import './screen/blue_connected_screen.dart';
@@ -25,8 +25,8 @@ class WalletApp extends StatelessWidget {
         ChangeNotifierProvider<Wallets>(
           create: (ctx) =>  Wallets(),
         ),
-        ChangeNotifierProvider<Transactions>(
-          create: (ctx) => Transactions(),
+        ChangeNotifierProvider<WalletTransactions>(
+          create: (ctx) => WalletTransactions(),
         )
       ],
       child: MaterialApp(
