@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet/models/transections.dart';
 
 import './provider/wallets.dart';
 
@@ -19,8 +20,15 @@ void main() => runApp(WalletApp());
 class WalletApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      builder: (ctx) => Wallets(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Wallets>(
+          create: (ctx) =>  Wallets(),
+        ),
+        ChangeNotifierProvider<Transactions>(
+          create: (ctx) => Transactions(),
+        )
+      ],
       child: MaterialApp(
         title: 'Wallet',
         theme: ThemeData(

@@ -1,6 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:wallet/models/transections.dart';
-
 class Wallet {
   final String name;
   final String id;
