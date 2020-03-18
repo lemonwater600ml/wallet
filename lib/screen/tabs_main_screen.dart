@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet/models/transections.dart';
 import 'package:wallet/provider/wallets.dart';
 import '../models/wallet.dart';
 
@@ -56,7 +57,6 @@ class TabsMainScreen extends StatefulWidget {
 }
 
 class _TabsWalletScreenState extends State<TabsMainScreen> {
-
   // WalletsIht ihtWallets;
 
   Future<Database> database;
@@ -131,22 +131,181 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
       ),
     ];
 
-    await createDatabase('wallets');
+    final dummyTransactions = [
+      Transactions( // rec
+          chain: 'chain1',
+          status: 'completed',
+          index: 1,
+          hash: '0xffe',
+          value: 3,
+          from: '0xf3257b324df',
+          to: '0xTe34Gder1234567890',
+          date: '2020-03-11 01:12:34 UTC',
+          datetime: '2020-03-11 01:12:34 UTC',
+          timestamp: 123456789,
+          block_hash: '0x3241b34c324d',
+          block_number: 123456,
+          gas: 78910,
+          gas_price: 0.3,
+          gas_used: 10,
+          nonce: 0,
+          confirmations: 778,
+          token_transfers: '',
+          input: '0x',
+          walletId: 'ETH1',
+          coinIdx: 0,
+          ),
+
+          Transactions( // rec 
+          chain: 'chain2',
+          status: 'completed',
+          index: 2,
+          hash: '0xffe',
+          value: 5,
+          from: '0xf3257b324df',
+          to: '0xTe34Gder1234567890',
+          date: '2020-03-12 01:12:34 UTC',
+          datetime: '2020-03-12 01:12:34 UTC',
+          timestamp: 123456789,
+          block_hash: '0x3241b34c324d',
+          block_number: 123456,
+          gas: 78910,
+          gas_price: 0.3,
+          gas_used: 10,
+          nonce: 0,
+          confirmations: 778,
+          token_transfers: '',
+          input: '0x',
+          walletId: 'ETH1',
+          coinIdx: 0,),
+          Transactions( // rec 
+          chain: 'chain3',
+          status: 'completed',
+          index: 2,
+          hash: '0xffe',
+          value: 7,
+          from: '0xf3257b324df',
+          to: '0xTe34Gder1234567890',
+          date: '2020-03-13 01:12:34 UTC',
+          datetime: '2020-03-13 01:12:34 UTC',
+          timestamp: 123456789,
+          block_hash: '0x3241b34c324d',
+          block_number: 123456,
+          gas: 78910,
+          gas_price: 0.3,
+          gas_used: 10,
+          nonce: 0,
+          confirmations: 778,
+          token_transfers: '',
+          input: '0x',
+          walletId: 'ETH1',
+          coinIdx: 0,),
+          Transactions( // rec 
+          chain: 'chain2',
+          status: 'completed',
+          index: 4,
+          hash: '0xffe',
+          value: 2,
+          from: '0xf3257b324df',
+          to: '0xTe34Gder1234567890',
+          date: '2020-03-14 01:12:34 UTC',
+          datetime: '2020-03-14 01:12:34 UTC',
+          timestamp: 123456789,
+          block_hash: '0x3241b34c324d',
+          block_number: 123456,
+          gas: 78910,
+          gas_price: 0.3,
+          gas_used: 10,
+          nonce: 0,
+          confirmations: 778,
+          token_transfers: '',
+          input: '0x',
+          walletId: 'ETH1',
+          coinIdx: 0,),
+          Transactions( // snd
+          chain: 'chain5',
+          status: 'completed',
+          index: 2,
+          hash: '0xffe',
+          value: 0.1,
+          from: '0xf3257b324df',
+          to: '0xTe34Gder1234567890',
+          date: '2020-03-16 01:12:34 UTC',
+          datetime: '2020-03-16 01:12:34 UTC',
+          timestamp: 123456789,
+          block_hash: '0x3241b34c324d',
+          block_number: 123456,
+          gas: 78910,
+          gas_price: 0.3,
+          gas_used: 10,
+          nonce: 0,
+          confirmations: 778,
+          token_transfers: '',
+          input: '0x',
+          walletId: 'ETH1',
+          coinIdx: 0,),
+          Transactions( // snd 
+          chain: 'chain6',
+          status: 'completed',
+          index: 2,
+          hash: '0xffe',
+          value: 0.2,
+          from: '0xf3257b324df',
+          to: '0xTe34Gder1234567890',
+          date: '2020-03-17 01:12:34 UTC',
+          datetime: '2020-03-17 01:12:34 UTC',
+          timestamp: 123456789,
+          block_hash: '0x3241b34c324d',
+          block_number: 123456,
+          gas: 78910,
+          gas_price: 0.3,
+          gas_used: 10,
+          nonce: 0,
+          confirmations: 778,
+          token_transfers: '',
+          input: '0x',
+          walletId: 'ETH1',
+          coinIdx: 0,),
+    ];
+
+    
+    // await createDatabase('wallets');
+
+    final Future<Database> newDatabase =
+        openDatabase(join(await getDatabasesPath(), 'wallets'),
+            onCreate: (db, version) async {
+      await db.execute(
+        "CREATE TABLE wallets (name TEXT PRIMARY KEY, id TEXT, mainType TEXT, mainAddress TEXT, createMethod TEXT, mnemonic TEXT, seed TEXT, seedHex TEXT, bip44Wallet TEXT, coinTypes TEXT, coinAddresses TEXT, coins TEXT)",
+      );
+      await db.execute(
+        "CREATE TABLE transactions (chain TEXT, status TEXT, index TEXT, hash TEXT, value REAL, from TEXT, to TEXT, date TEXT, datetime TEXT, timestamp INTEGER, block_hash TEXT, block_number INTEGER, gas INTEGER, gas_price REAL, gas_used INTEGER, nonce INTEGER, confirmations INTEGER, token_transfers TEXT, input TEXT, walletId TEXT, coinIdx INTEGER)",
+      );
+    }, version: 1);
+
+    this.database = newDatabase;
+    print('====TABLE wallets created===');
+    print('====TABLE transactions created===');
+
     for (var i = 0; i < dummyWallets.length; i++) {
       await insertWallet('wallets', dummyWallets[i]);
     }
+
+    for (var i = 0; i < dummyTransactions.length; i++) {
+      Database db = await database;
+      db.insert('transactions', dummyTransactions[i].toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
+    }
   }
 
-  Future<void> createDatabase(String databaseName) async {
-    final Future<Database> newDatabase = openDatabase(
-        join(await getDatabasesPath(), databaseName), onCreate: (db, version) {
-      return db.execute(
-        "CREATE TABLE wallets (name TEXT PRIMARY KEY, id TEXT, mainType TEXT, mainAddress TEXT, createMethod TEXT, mnemonic TEXT, seed TEXT, seedHex TEXT, bip44Wallet TEXT, coinTypes TEXT, coinAddresses TEXT, coins TEXT)",
-      );
-    }, version: 1);
-    this.database = newDatabase;
-    print('====database created===');
-  }
+  // Future<void> createDatabase(String databaseName) async {
+  //   final Future<Database> newDatabase = openDatabase(
+  //       join(await getDatabasesPath(), databaseName), onCreate: (db, version) {
+  //     return db.execute(
+  //       "CREATE TABLE wallets (name TEXT PRIMARY KEY, id TEXT, mainType TEXT, mainAddress TEXT, createMethod TEXT, mnemonic TEXT, seed TEXT, seedHex TEXT, bip44Wallet TEXT, coinTypes TEXT, coinAddresses TEXT, coins TEXT)",
+  //     );
+  //   }, version: 1);
+  //   this.database = newDatabase;
+  //   print('====database created===');
+  // }
 
   Future<void> insertWallet(String tableName, Wallet wallet) async {
     final Database db = await database;
@@ -188,7 +347,6 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
     // }
   }
 
-
   @override
   initState() {
     super.initState();
@@ -202,10 +360,8 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
       // });
       //
       setDatabasePathAndOpen('wallets').then((_) {
-
         setState(() {
           walletsStream = getWalletsStream();
-          
         });
       });
       // print(
@@ -214,10 +370,9 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
   }
 
   Widget build(BuildContext context) {
-    
     walletsStream = getWalletsStream();
     print('In TabsScreen: Build run');
-    
+
     return StreamBuilder<List<Wallet>>(
         stream: walletsStream,
         builder: (context, snapshot) {
@@ -231,7 +386,8 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
           } else {
             Provider.of<Wallets>(context).updataWallets(snapshot.data);
             wallets = Provider.of<Wallets>(context).wallets;
-            print('In TabsScreen StreamBuilder: Number of wallets: ${wallets.length}');
+            print(
+                'In TabsScreen StreamBuilder: Number of wallets: ${wallets.length}');
 
             return Scaffold(
               appBar: AppBar(
@@ -245,7 +401,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
               //   displayedName: displayedName,
               //   child: WalletScreen(),
               // ),
-              
+
               drawer: Drawer(
                 child: Column(
                   children: <Widget>[
@@ -260,7 +416,8 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
                                     'displayedName before tap: ${displayedName}');
 
                                 setState(() {
-                                  Provider.of<Wallets>(context).changeDisplayedName(wallets[idx].name);
+                                  Provider.of<Wallets>(context)
+                                      .changeDisplayedName(wallets[idx].name);
                                   // displayedName = snapshot.data[idx].name;
                                 });
                                 print(
@@ -269,13 +426,10 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
                                 Navigator.of(context).pop();
                               },
                               leading: Icon(Icons.lock_outline),
-                              title: Text(
-                                wallets[idx]?.name?? 'unknown name'),
-                                  // snapshot.data[idx]?.name ?? 'unknown name'),
-                              trailing:
-                                  Text(
-                                    wallets[idx]?.id ?? 'unknown id'),
-                                    // snapshot.data[idx]?.id ?? 'unknown id'),
+                              title: Text(wallets[idx]?.name ?? 'unknown name'),
+                              // snapshot.data[idx]?.name ?? 'unknown name'),
+                              trailing: Text(wallets[idx]?.id ?? 'unknown id'),
+                              // snapshot.data[idx]?.id ?? 'unknown id'),
                             ),
                           );
                         },
