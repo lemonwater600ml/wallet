@@ -33,14 +33,14 @@ class CurrencyScreen extends StatelessWidget {
     final exchangeRate = EXCHANGERATES;
 
     final rcv = walletTransactions
-        .where((t) => (t.coinIdx == coinIdx &&
+        .where((t) =>
             t.to_acc ==
-                displayedWallet.coinAddresses.split(" ").toList()[coinIdx]))
+            displayedWallet.coinAddresses.split(" ").toList()[coinIdx])
         .toList();
     final snd = walletTransactions
-        .where((t) => (t.coinIdx == coinIdx &&
+        .where((t) =>
             t.from_acc ==
-                displayedWallet.coinAddresses.split(" ").toList()[coinIdx]))
+            displayedWallet.coinAddresses.split(" ").toList()[coinIdx])
         .toList();
 
     final receivedRecords = TRANSACTIONS_RCV;

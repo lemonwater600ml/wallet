@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet/screen/send_check_screen.dart';
+import 'package:wallet/screen/send_complete_screen.dart';
 
 import './provider/wallets.dart';
 import './provider/wallet_transactions.dart';
@@ -50,6 +52,8 @@ class WalletApp extends StatelessWidget {
           CreateWalletCheckScreen.routeName: (ctx) => CreateWalletCheckScreen(),
           BlueConnectedScreen.routeName: (ctx) => BlueConnectedScreen(),
           WalletScreen.routeName: (ctx) => WalletScreen(),
+          SendCheckScreen.routeName: (ctx) => SendCheckScreen(),
+          SendCompleteScreen.routeName: (ctx) => SendCheckScreen(),
         },
       ),
     );
