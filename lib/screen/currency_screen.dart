@@ -51,7 +51,7 @@ class CurrencyScreen extends StatelessWidget {
     }
 
     void pressSend(BuildContext context) {
-      Navigator.of(context).pushNamed(SendScreen.routeName);
+      Navigator.of(context).pushNamed(SendScreen.routeName, arguments: coinIdx);
     }
 
     return Scaffold(
@@ -105,8 +105,10 @@ class CurrencyScreen extends StatelessWidget {
                             onTap: () => {},
                             leading: Icon(Icons.monetization_on),
                             title: Text(coinType),
-                            subtitle: Text(
-                              "${rcv[idx].from_acc.substring(1, 6)}...${rcv[idx].from_acc.substring(rcv[idx].from_acc.length - 6)}",
+                            
+                            subtitle: Text( rcv[idx].from_acc.length > 6 ?
+                              "${rcv[idx].from_acc.substring(1, 6)}...${rcv[idx].from_acc.substring(rcv[idx].from_acc.length - 6)}"
+                              : "${rcv[idx].from_acc}"
                             ),
                             trailing: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -128,8 +130,9 @@ class CurrencyScreen extends StatelessWidget {
                             onTap: () => {},
                             leading: Icon(Icons.monetization_on),
                             title: Text(coinType),
-                            subtitle: Text(
-                              "${snd[idx].to_acc.substring(1, 6)}...${snd[idx].to_acc.substring(rcv[idx].from_acc.length - 6)}",
+                            subtitle: Text(snd[idx].to_acc.length > 6 ?
+                              "${snd[idx].to_acc.substring(1, 6)}...${snd[idx].to_acc.substring(rcv[idx].from_acc.length - 6)}"
+                              : "${snd[idx].to_acc}"
                             ),
                             trailing: Column(
                               mainAxisAlignment: MainAxisAlignment.center,

@@ -32,18 +32,18 @@ class _SendScreenState extends State<SendScreen> {
     });
   }
 
-   _toSendCheckScreen(_amount, _address, _memo){
+   _toSendCheckScreen(_amount, _address, _memo, coinIdx){
         Navigator.of(context).pushNamed(SendCheckScreen.routeName,
-        arguments: [_amount, _address, _memo]);
+        arguments: [_amount, _address, _memo, coinIdx]);
   }
 
-  _addTransaction(displayedWallet, _amount, _address, _memo) {}
 
   @override
   Widget build(BuildContext context) {
-    String _amount;
+    double _amount;
     String _address;
     String _memo;
+    int coinIdx = ModalRoute.of(context).settings.arguments;
 
     var displayedWallet = Provider.of<Wallets>(context).displayedWallet();
     return Scaffold(
@@ -79,7 +79,7 @@ class _SendScreenState extends State<SendScreen> {
                               return null;
                             },
                             onSaved: (value) {
-                              _amount = value;
+                              _amount = double.parse(value);
                             },
                           ),
                         ],
@@ -157,7 +157,7 @@ class _SendScreenState extends State<SendScreen> {
                             _formKey.currentState.save();
                             print(
                                 '_amount: $_amount; _address: $_address; _memot: $_memo');
-                            _toSendCheckScreen(_amount, _address, _memo);
+                            _toSendCheckScreen(_amount, _address, _memo, coinIdx);
                             // _addTransaction(displayedWallet, _amount, _address, _memo);
                             
 
