@@ -128,7 +128,7 @@ class _SendScreenState extends State<SendScreen> {
                               SnackBar(content: Text('Processing Data')));
                         }
                       },
-                      child: Text('Next step'),
+                      child: Text('Next step', style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ],

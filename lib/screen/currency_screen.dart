@@ -28,17 +28,21 @@ class CurrencyScreen extends StatelessWidget {
 
     var walletTransactions =
         Provider.of<WalletTransactions>(context).walletTransactions;
-    print("walletTransactions.length: ${walletTransactions.length}");
+    // print("walletTransactions.length: ${walletTransactions.length}");
 
     final exchangeRate = EXCHANGERATES;
-    // int currenciesIdx;
-    // final selectedWalletIdx = 'ETH1';
-    // final selectedWallet =
-    //     DUMMY_WALLETS.firstWhere((wallet) => wallet.id == selectedWalletIdx);
-    // final rcd = walletTransactions.where(
-    //     (t) => t.to == displayedWallet.coins.split(" ").toList()[coinIdx]);
-    // final snd = walletTransactions.where(
-    //     (t) => t.from == displayedWallet.coins.split(" ").toList()[coinIdx]);
+
+    final rcv = walletTransactions
+        .where((t) => (t.coinIdx == coinIdx &&
+            t.to_acc ==
+                displayedWallet.coinAddresses.split(" ").toList()[coinIdx]))
+        .toList();
+    final snd = walletTransactions
+        .where((t) => (t.coinIdx == coinIdx &&
+            t.from_acc ==
+                displayedWallet.coinAddresses.split(" ").toList()[coinIdx]))
+        .toList();
+
     final receivedRecords = TRANSACTIONS_RCV;
     final sendRecords = TRANSACTIONS_SND;
 
@@ -81,12 +85,67 @@ class CurrencyScreen extends StatelessWidget {
                     )),
                 Divider(),
 
-                // Container(
-                //     constraints: BoxConstraints.expand(height: 30),
-                //     // height: 100,
-                //     child: TabBar(
-                //         tabs: [Tab(text: "Receive"), Tab(text: "send")])),
-                // Divider(),
+                Container(
+                  constraints: BoxConstraints.expand(height: 30),
+                  // height: 100,
+                  child:
+                      TabBar(tabs: [Tab(text: "Receive"), Tab(text: "send")]),
+                  color: Colors.grey,
+                ),
+
+                Divider(),
+                Container(
+                  height: 350,
+                  child: TabBarView(children: [
+                    //
+                    ListView.builder(
+                      itemBuilder: (ctx, idx) {
+                        return InkWell(
+                          child: ListTile(
+                            onTap: () => {},
+                            leading: Icon(Icons.monetization_on),
+                            title: Text(coinType),
+                            subtitle: Text(
+                              "${rcv[idx].from_acc.substring(1, 6)}...${rcv[idx].from_acc.substring(rcv[idx].from_acc.length - 6)}",
+                            ),
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Text("+ ${rcv[idx].value} $coinType"),
+                                Text(rcv[idx].date)
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: rcv.length,
+                    ),
+                    ListView.builder(
+                      itemBuilder: (ctx, idx) {
+                        return InkWell(
+                          child: ListTile(
+                            onTap: () => {},
+                            leading: Icon(Icons.monetization_on),
+                            title: Text(coinType),
+                            subtitle: Text(
+                              "${snd[idx].to_acc.substring(1, 6)}...${snd[idx].to_acc.substring(rcv[idx].from_acc.length - 6)}",
+                            ),
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Text("- ${snd[idx].value} $coinType"),
+                                Text(snd[idx].date),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: snd.length,
+                    ),
+                  ]),
+                )
                 // Container(
                 //   height: 350,
                 //   child: TabBarView(children: [
