@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet/screen/send_check_screen.dart';
+import 'package:wallet/screen/send_complete_screen.dart';
 
 import './provider/wallets.dart';
+import './provider/wallet_transactions.dart';
 
 import './screen/wallet_screen.dart';
 import './screen/blue_connected_screen.dart';
@@ -13,14 +16,23 @@ import './screen/send_screen.dart';
 import './screen/currency_screen.dart';
 import './screen/receive_screen.dart';
 import './screen/tabs_main_screen.dart';
+import 'provider/sending_p.dart';
 
 void main() => runApp(WalletApp());
 
 class WalletApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      builder: (ctx) => Wallets(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Wallets>(
+          create: (ctx) =>  Wallets(),
+        ),
+        ChangeNotifierProvider<WalletTransactions>(
+          create: (ctx) => WalletTransactions(),
+        ),
+        ChangeNotifierProvider<SendingP>(create: (ctx) => SendingP())
+      ],
       child: MaterialApp(
         title: 'Wallet',
         theme: ThemeData(
@@ -42,6 +54,8 @@ class WalletApp extends StatelessWidget {
           CreateWalletCheckScreen.routeName: (ctx) => CreateWalletCheckScreen(),
           BlueConnectedScreen.routeName: (ctx) => BlueConnectedScreen(),
           WalletScreen.routeName: (ctx) => WalletScreen(),
+          SendCheckScreen.routeName: (ctx) => SendCheckScreen(),
+          SendCompleteScreen.routeName: (ctx) => SendCompleteScreen(),
         },
       ),
     );

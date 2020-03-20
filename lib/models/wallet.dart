@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-
 class Wallet {
   final String name;
   final String id;
@@ -14,7 +13,7 @@ class Wallet {
   String coinTypes;  // coinTypes is a String zip with coins. and plit by space e.g., "Bitcoin Ethereum"
   String coinAddresses;
   String coins;      // coins is a String zip with coinTypes and split by space e.g.,  "0.2223 2"
-
+  
 // can create new table for trans record and search according to wallet name
 // final TRANSACTIONS_SND = [
 //   {
@@ -45,7 +44,6 @@ class Wallet {
     this.coinTypes,
     this.coinAddresses,
     this.coins,
-    
   });
 
   set setCoinTypes(String val) => coinTypes = val;
