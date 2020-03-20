@@ -293,7 +293,6 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
     }
 
     for (var i = 0; i < dummyTransactions.length; i++) {
-      // Database db = await database;
       await db.insert('transactions', dummyTransactions[i].toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace);
           
