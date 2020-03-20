@@ -32,7 +32,6 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
   String _createMethod;
 
   List<String> methodList = [
-    'Please select',
     'Create new wallet',
     'Recovery wallet'
   ];
