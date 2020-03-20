@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 
 class WalletTransaction {
-  
-
   final String chain;
   final String status;
   final int idx;

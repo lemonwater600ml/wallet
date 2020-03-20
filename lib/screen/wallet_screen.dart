@@ -123,6 +123,8 @@ class _WalletScreenState extends State<WalletScreen> {
 
   void selectCurrency(BuildContext context, num idx) {
     Provider.of<Sending>(context).setCoinIdx(idx);
+    Provider.of<Sending>(context).setCoinType(displayedWallet.coinTypes.split(" ")[idx]);
+    Provider.of<Sending>(context).setFromAddr(displayedWallet.coinAddresses.split(" ")[idx]);
     Navigator.of(context).pushNamed(CurrencyScreen.routeName, arguments: idx);
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet/provider/exchange_rate.dart';
 import 'package:wallet/screen/send_check_screen.dart';
 import 'package:wallet/screen/send_complete_screen.dart';
 
@@ -37,6 +38,9 @@ class WalletApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<MinerFee>(
           create: (ctx) => MinerFee(),
+        ),
+        ChangeNotifierProvider<ExchangeRate>(
+          create: (ctx) => ExchangeRate(),
         )
       ],
       child: MaterialApp(

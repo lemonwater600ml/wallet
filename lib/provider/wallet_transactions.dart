@@ -15,7 +15,6 @@ class WalletTransactions with ChangeNotifier {
   void addWalletTransaction(WalletTransaction walletTransaction) {
     _walletTransactions.add(walletTransaction);
     notifyListeners();
-    
   }
 
   void updateWalletTransactions(List<WalletTransaction> walletTransactions){

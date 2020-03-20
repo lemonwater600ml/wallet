@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
+import 'package:wallet/provider/exchange_rate.dart';
+import 'package:wallet/provider/miner_fee.dart';
 import 'package:wallet/provider/sending.dart';
 import 'package:wallet/provider/wallets.dart';
 import 'package:wallet/screen/send_check_screen.dart';
-
-import '../dummy_data.dart';
 
 class SendScreen extends StatefulWidget {
   static const routeName = '/send-screen';
@@ -41,6 +41,8 @@ class _SendScreenState extends State<SendScreen> {
   Widget build(BuildContext context) {
     var displayedWallet = Provider.of<Wallets>(context).displayedWallet();
     var sending = Provider.of<Sending>(context);
+    var minerFee = Provider.of<MinerFee>(context);
+    var exchangeRate = Provider.of<ExchangeRate>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -111,7 +113,7 @@ class _SendScreenState extends State<SendScreen> {
                               return null;
                             },
                             onSaved: (value) {
-                              sending.setAddress(value);
+                              sending.setToAddr(value);
                             },
                           ),
                           // Text(scanResult),
@@ -138,11 +140,16 @@ class _SendScreenState extends State<SendScreen> {
                       padding: EdgeInsets.all(15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        // crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           Text('Miner Fee'),
-                          Text("1234"),
-                        ],
+                          
+                        Column(
+                          children: <Widget>[
+                            Text(minerFee.typeIs(sending.coinType).toString() + " " + sending.coinType,),
+                            Text("~= \$ ${minerFee.typeIs(sending.coinType)*exchangeRate.typeIs(sending.coinType)}")
+                          ],
+                        )
+                      ],
                       ),
                     ),
                   ),
