@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'dart:async';
 import './tabs_main_screen.dart';
 import 'tabs_main_screen.dart';
 import '../models/wallet.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
-import '../provider/wallets.dart';
 
 class CreateWalletCheckScreen extends StatelessWidget {
   static const routeName = '/create-wallet-check';
@@ -223,9 +219,9 @@ class CreateWalletCheckScreen extends StatelessWidget {
                 _writeNewWalletIntoCard();
                 print('In CreateWalletCheckScreen: onPressed completed');
                 var wallets = await getWallets();
+                
                 print('In CreateWalletCheckScreen: number of wallets in db: ${wallets.length}');
-                Provider.of<Wallets>(context).updataWallets(wallets);
-                // print('In CreateWalletCheckScreen: number of wallets in db: ${wallets.length}');
+
                 Navigator.popUntil(
                     context, ModalRoute.withName(TabsMainScreen.routeName));
               }

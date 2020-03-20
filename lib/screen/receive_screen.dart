@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:wallet/provider/wallets.dart';
 
 import '../dummy_data.dart';
 
 class ReceiveScreen extends StatelessWidget {
+  // can be replaced by passing data
+  final exchangeRate = EXCHANGERATES;
+  final selectedWallet =
+      DUMMY_WALLETS.firstWhere((wallet) => wallet.id == 'eth1');
+
   static const routeName = '/receive-screen';
   @override
   Widget build(BuildContext context) {
-    var displayedWallet = Provider.of<Wallets>(context).displayedWallet();
-    
     return Scaffold(
       appBar: AppBar(
         title: Text('Receive'),
@@ -22,25 +23,24 @@ class ReceiveScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-           
             Container(
               padding: EdgeInsets.all(50),
               child: Center(
                 child: QrImage(
                   backgroundColor: Colors.white,
-                  data: displayedWallet.mainAddress,
-                  // data: selectedWallet.address,
+                  data: selectedWallet.address,
                   version: QrVersions.auto,
                   size: 200,
                   gapless: false,
                 ),
               ),
             ),
-            Center(child: Text('Address: ${displayedWallet.coinAddresses}'))
+            Center(child: Text('Address: ${selectedWallet.address}')),
           ],
         ),
       ),
       bottomNavigationBar: BottomAppBar(
+          // color: Theme.of(context).primaryColor,
           child: ButtonBar(
         buttonMinWidth: 150,
         alignment: MainAxisAlignment.spaceEvenly,

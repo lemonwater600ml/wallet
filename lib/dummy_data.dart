@@ -29,10 +29,10 @@ const DUMMY_WALLETS = const [
   // )
 ];
 
-// const EXCHANGERATES = {
-//   'ETH': 124.21,
-//   'USDT': 1.011,
-// };
+const EXCHANGERATES = {
+  'ETH': 124.21,
+  'USDT': 1.011,
+};
 
 final TRANSACTIONS_RCV = [
   {
