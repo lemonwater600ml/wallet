@@ -16,6 +16,7 @@ import './screen/send_screen.dart';
 import './screen/currency_screen.dart';
 import './screen/receive_screen.dart';
 import './screen/tabs_main_screen.dart';
+import 'provider/sending_p.dart';
 
 void main() => runApp(WalletApp());
 
@@ -29,7 +30,8 @@ class WalletApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<WalletTransactions>(
           create: (ctx) => WalletTransactions(),
-        )
+        ),
+        ChangeNotifierProvider<SendingP>(create: (ctx) => SendingP())
       ],
       child: MaterialApp(
         title: 'Wallet',
@@ -53,7 +55,7 @@ class WalletApp extends StatelessWidget {
           BlueConnectedScreen.routeName: (ctx) => BlueConnectedScreen(),
           WalletScreen.routeName: (ctx) => WalletScreen(),
           SendCheckScreen.routeName: (ctx) => SendCheckScreen(),
-          SendCompleteScreen.routeName: (ctx) => SendCheckScreen(),
+          SendCompleteScreen.routeName: (ctx) => SendCompleteScreen(),
         },
       ),
     );

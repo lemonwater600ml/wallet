@@ -67,21 +67,6 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
   Wallet displayedWallet;
   List<WalletTransaction> walletTransactions;
 
-  // final List<Map<String, Object>> _pages = [
-  //   {
-  //     'page': WalletScreen(),
-  //     'title': 'Wallet',
-  //   },
-  // ];
-
-  // int _selectedPageIndex = 0;
-
-  // void _selectedIndex(int index) {
-  //   setState(() {
-  //     _selectedPageIndex = index;
-  //   });
-  // }
-
   void _toCreateWalletScreen(BuildContext context) {
     Navigator.of(context)
         .pushNamed(
@@ -455,12 +440,6 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
                 centerTitle: true,
               ),
               body: WalletScreen(),
-
-              // body: WalletsIht(
-              //   wallets: wallets,
-              //   displayedName: displayedName,
-              //   child: WalletScreen(),
-              // ),
 
               drawer: Drawer(
                 child: Column(
