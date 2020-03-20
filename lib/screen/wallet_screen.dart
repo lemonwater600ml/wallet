@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet/provider/sending_p.dart';
+import 'package:wallet/provider/sending.dart';
 import 'package:wallet/screen/currency_screen.dart';
 
 import '../exchangerates.dart';
@@ -122,7 +122,7 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   void selectCurrency(BuildContext context, num idx) {
-    Provider.of<SendingP>(context).setCoinIdx(idx);
+    Provider.of<Sending>(context).setCoinIdx(idx);
     Navigator.of(context).pushNamed(CurrencyScreen.routeName, arguments: idx);
   }
 

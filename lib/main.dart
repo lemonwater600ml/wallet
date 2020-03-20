@@ -16,7 +16,8 @@ import './screen/send_screen.dart';
 import './screen/currency_screen.dart';
 import './screen/receive_screen.dart';
 import './screen/tabs_main_screen.dart';
-import 'provider/sending_p.dart';
+import 'provider/sending.dart';
+import './provider/miner_fee.dart';
 
 void main() => runApp(WalletApp());
 
@@ -26,12 +27,17 @@ class WalletApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<Wallets>(
-          create: (ctx) =>  Wallets(),
+          create: (ctx) => Wallets(),
         ),
         ChangeNotifierProvider<WalletTransactions>(
           create: (ctx) => WalletTransactions(),
         ),
-        ChangeNotifierProvider<SendingP>(create: (ctx) => SendingP())
+        ChangeNotifierProvider<Sending>(
+          create: (ctx) => Sending(),
+        ),
+        ChangeNotifierProvider<MinerFee>(
+          create: (ctx) => MinerFee(),
+        )
       ],
       child: MaterialApp(
         title: 'Wallet',

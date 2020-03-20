@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqlite_api.dart';
-import 'package:wallet/provider/sending_p.dart';
+import 'package:wallet/provider/sending.dart';
 import 'package:wallet/provider/wallet_transactions.dart';
 import 'package:wallet/provider/wallets.dart';
 
@@ -21,7 +21,6 @@ class CurrencyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final coinIdx = ModalRoute.of(context).settings.arguments;
     var displayedWallet = Provider.of<Wallets>(context).displayedWallet();
-    // var sendingP = Provider.of<SendingP>(context);
     final double coins =
         double.parse(displayedWallet.coins.split(" ").toList()[coinIdx]);
     final coinType = displayedWallet.coinTypes.split(" ").toList()[coinIdx];
@@ -109,7 +108,7 @@ class CurrencyScreen extends StatelessWidget {
                         title: Text(coinType),
                         
                         subtitle: Text( rcv[idx].from_acc.length > 6 ?
-                          "${rcv[idx].from_acc.substring(1, 6)}...${rcv[idx].from_acc.substring(rcv[idx].from_acc.length - 6)}"
+                          "${rcv[idx].from_acc.substring(0, 6)}...${rcv[idx].from_acc.substring(rcv[idx].from_acc.length - 6)}"
                           : "${rcv[idx].from_acc}"
                         ),
                         trailing: Column(
@@ -133,7 +132,7 @@ class CurrencyScreen extends StatelessWidget {
                         leading: Icon(Icons.monetization_on),
                         title: Text(coinType),
                         subtitle: Text(snd[idx].to_acc.length > 6 ?
-                          "${snd[idx].to_acc.substring(1, 6)}...${snd[idx].to_acc.substring(rcv[idx].from_acc.length - 6)}"
+                          "${snd[idx].to_acc.substring(0, 6)}...${snd[idx].to_acc.substring(rcv[idx].from_acc.length - 6)}"
                           : "${snd[idx].to_acc}"
                         ),
                         trailing: Column(
