@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet/provider/exchange_rate.dart';
 import 'package:wallet/provider/sending.dart';
 import 'package:wallet/screen/currency_screen.dart';
 
-import '../exchangerates.dart';
+// import '../exchangerates.dart';
 import './tabs_main_screen.dart';
 
 import '../provider/wallets.dart';
@@ -45,32 +46,9 @@ class _WalletScreenState extends State<WalletScreen> {
   ];
 
   String dropdownValue = coinList[0];
-
   Future<Database> database;
-  // List<Wallet> wallets;
   Stream<List<Wallet>> walletsStream;
   Wallet displayedWallet;
-
-  // Future<void> createDummyData() async {
-  //   final dummyWallet = Wallet(
-  //     name: 'testWallet',
-  //     id: 'ETH1',
-  //     mainAddress: '0xTe34Gder1234567890',
-  //     mainType: 'ETH',
-  //     method: 'Recovery wallet',
-  //     mnemonic: '-1 -2 -3 -4',
-  //     mnemonicLength: 12,
-  //     seed: 'testSeed',
-  //     seedHex: 'testSeedHex',
-  //     bip44Wallet: 'testBip44Wallet',
-  //     coinTypes: 'Ethereum USDT',
-  //     coinAddresses: 'testAdd1 testAdd2',
-  //     coins: '16.7 5',
-  //   );
-  //   await setDatabasePathAndOpen('wallets');
-  //   // await createDatabase('wallets');
-  //   // await insertWallet('wallets', dummyWallet);
-  // }
 
   Future<void> setDatabasePathAndOpen(String databaseName) async {
     final Future<Database> newDatabase =
@@ -136,10 +114,11 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Widget build(BuildContext context) {
-    final exchangeRate = EXCHANGERATES;
+    var exchangeRate = Provider.of<ExchangeRate>(context);
+    // final exchangeRate = EXCHANGERATES;
     // var displayedName;
 
-    String fiatValueSum(String coinTypes, String coins, exchangeRate) {
+    String fiatValueSum(String coinTypes, String coins, ExchangeRate exchangeRate) {
       if (coinTypes == null || coins == null || exchangeRate == null) {
         return '0';
       }
@@ -147,19 +126,19 @@ class _WalletScreenState extends State<WalletScreen> {
       List<String> coinTypesList = coinTypes.split(' ');
       List<String> coinsList = coins.split(' ');
       for (var i = 0; i < coinTypesList.length; i++) {
-        sum += exchangeRate[coinTypesList[i]] * double.parse(coinsList[i]);
+        sum += exchangeRate.typeIs(coinTypesList[i]) * double.parse(coinsList[i]);
       }
       return sum.toString();
     }
 
     String _fiatValue(
-        String coinType, String coinNumber, Map<String, double> echangeRate) {
+        String coinType, String coinNumber,ExchangeRate echangeRate) {
       if (coinType == null || coinNumber == null || exchangeRate == null) {
         return 'unknown value';
       }
 
       var coinNumberDouble = double.parse(coinNumber);
-      double result = exchangeRate[coinType] * coinNumberDouble;
+      double result = exchangeRate.typeIs(coinType) * coinNumberDouble;
       return result.toString();
     }
 

@@ -12,45 +12,6 @@ import './wallet_screen.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-// import '../main.dart';
-
-// class WalletsIht extends InheritedWidget {
-//   String displayedName;
-//   final List<Wallet> wallets;
-//   WalletsIht({Widget child, this.displayedName, this.wallets})
-//       : super(child: child);
-
-//   @override
-//   bool updateShouldNotify(WalletsIht oldWidget) {
-//     if (wallets != oldWidget.wallets ||
-//         displayedName != oldWidget.displayedName) {
-//       print('WalletsIht detected change!!!!');
-//     }
-//     return wallets != oldWidget.wallets ||
-//         displayedName != oldWidget.displayedName;
-//   }
-
-//   static WalletsIht of(BuildContext context) =>
-//       context.dependOnInheritedWidgetOfExactType();
-// }
-
-// class InheritedDisplayedName extends InheritedWidget {
-//   final String displayedName;
-//   InheritedDisplayedName({Widget child, this.displayedName})
-//       : super(child: child);
-
-//   @override
-//   bool updateShouldNotify(InheritedDisplayedName oldWidget) {
-//     if (displayedName != oldWidget.displayedName) {
-//       print('InheritedDisplayedName detected change!!!!');
-//     }
-//     return displayedName != oldWidget.displayedName;
-//   }
-
-//   static InheritedDisplayedName of(BuildContext context) =>
-//       context.dependOnInheritedWidgetOfExactType();
-// }
-
 class TabsMainScreen extends StatefulWidget {
   static const routeName = '/homepage';
   @override

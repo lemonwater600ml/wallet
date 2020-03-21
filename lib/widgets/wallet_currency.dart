@@ -2,7 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 
-import 'package:wallet/dummy_data.dart';
+// import 'package:wallet/dummy_data.dart';
 
 // ##### hardcoded #####
 // 

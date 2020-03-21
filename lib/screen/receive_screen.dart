@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:wallet/provider/wallets.dart';
 
-import '../dummy_data.dart';
+// import '../dummy_data.dart';
 
 class ReceiveScreen extends StatelessWidget {
   static const routeName = '/receive-screen';
