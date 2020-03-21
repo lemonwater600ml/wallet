@@ -225,8 +225,6 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
       ),
     ];
 
-    // await createDatabase('wallets');
-
     final Future<Database> newDatabase =
         openDatabase(join(await getDatabasesPath(), 'wallets'),
             onCreate: (db, version) async {

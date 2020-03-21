@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet/models/wallet_transaction.dart';
+import 'package:wallet/provider/miner_fee.dart';
 import '../provider/exchange_rate.dart';
 import '../provider/sending.dart';
 import '../provider/wallet_transactions.dart';
@@ -12,17 +14,14 @@ class CurrencyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final coinIdx = ModalRoute.of(context).settings.arguments;
     final coinIdx = Provider.of<Sending>(context).coinIdx;
-    // final coinType = displayedWallet.coinTypes.split(" ").toList()[coinIdx];
     final coinType = Provider.of<Sending>(context).coinType;
     var exchangeRate = Provider.of<ExchangeRate>(context);
     var displayedWallet = Provider.of<Wallets>(context).displayedWallet();
     final double coins =
         double.parse(displayedWallet.coins.split(" ").toList()[coinIdx]);
+    var minerFee = Provider.of<MinerFee>(context);
     var wts = Provider.of<WalletTransactions>(context).walletTransactions;
-
-    // final exchangeRate = EXCHANGERATES;
 
     final rcv = wts
         .where((t) =>
@@ -41,6 +40,58 @@ class CurrencyScreen extends StatelessWidget {
 
     void pressSend(BuildContext context) {
       Navigator.of(context).pushNamed(SendScreen.routeName);
+    }
+
+    _transactionDialog(
+        ctx, idx, List<WalletTransaction> wts, String rcvOrSndSign) {
+      WalletTransaction t = wts[idx];
+
+      showDialog(
+          context: ctx,
+          builder: (_) => AlertDialog(
+                title: Text("Transaction Detail"),
+                content: Container(
+                    width: double.maxFinite,
+                    child: ListView(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.all(15),
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(rcvOrSndSign),
+                            Text(t.value.toString()),
+                            Text(" "+coinType)
+                          ],
+                        )),
+                        Divider(),
+                        Text("Status"),
+                        Text(t.status),
+                        Divider(),
+                        Text("Date"),
+                        Text(t.date),
+                        Divider(),
+                        Text("From"),
+                        Text(t.fromAddr),
+                        Divider(),
+                        Text("To"),
+                        Text(t.toAddr),
+                        Divider(),
+                        Text("Miner fee"),
+                        Text(minerFee.typeIs(coinType).toString()),
+                        Divider(),
+                        Text("Transaction Hash"),
+                        Text(t.hash),
+                      ],
+                    )),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("OK")),
+                ],
+              ));
     }
 
     return Scaffold(
@@ -88,9 +139,8 @@ class CurrencyScreen extends StatelessWidget {
                     ListView.builder(
                       itemBuilder: (ctx, idx) {
                         return InkWell(
-                          // TODO dialog detail of transactions
                           child: ListTile(
-                            onTap: () => {},
+                            onTap: () => _transactionDialog(ctx, idx, rcv, "+"),
                             leading: Icon(Icons.monetization_on),
                             title: Text(coinType),
                             subtitle: Text(rcv[idx].fromAddr.length > 6
@@ -113,7 +163,7 @@ class CurrencyScreen extends StatelessWidget {
                       itemBuilder: (ctx, idx) {
                         return InkWell(
                           child: ListTile(
-                            onTap: () => {},
+                            onTap: () => _transactionDialog(ctx, idx, snd, "-"),
                             leading: Icon(Icons.monetization_on),
                             title: Text(coinType),
                             subtitle: Text(snd[idx].toAddr.length > 6
