@@ -35,7 +35,7 @@ class SendCheckScreen extends StatelessWidget {
                       // TODO wallets provider & sqlite
                       _updateWallets(wts);
 
-                      // TODO debug
+                      
                       
                       Navigator.of(context)
                           .pushNamed(SendCompleteScreen.routeName);

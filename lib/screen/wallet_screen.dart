@@ -122,9 +122,10 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   void selectCurrency(BuildContext context, num idx) {
-    Provider.of<Sending>(context).setCoinIdx(idx);
-    Provider.of<Sending>(context).setCoinType(displayedWallet.coinTypes.split(" ")[idx]);
-    Provider.of<Sending>(context).setFromAddr(displayedWallet.coinAddresses.split(" ")[idx]);
+    var sending = Provider.of<Sending>(context);
+    sending.setCoinIdx(idx);
+    sending.setCoinType(displayedWallet.coinTypes.split(" ")[idx]);
+    sending.setFromAddr(displayedWallet.coinAddresses.split(" ")[idx]);
     Navigator.of(context).pushNamed(CurrencyScreen.routeName, arguments: idx);
   }
 
@@ -250,35 +251,45 @@ class _WalletScreenState extends State<WalletScreen> {
                   IconButton(
                     icon: Icon(Icons.more_horiz),
                     onPressed: () {
-                      
-                        return showDialog<void>(
-                          context: context,
-                          barrierDismissible: false, // user must tap button!
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Wallet information'),
-                              content: SingleChildScrollView(
-                                child: ListBody(
-                                  children: <Widget>[
-                                    Text('Name: ${displayedWallet.name.toString() ?? 'unknown'}', overflow: TextOverflow.fade,),
-                                    Text('Id: ${displayedWallet.id ?? 'unknown'}', overflow: TextOverflow.fade,),
-                                    Text('Address: ${displayedWallet.mainAddress ?? 'unknown'}', overflow: TextOverflow.fade,),
-                                    Text('Seed: ${displayedWallet.seed ?? 'unknown'}', overflow: TextOverflow.fade,),
-                                  ],
-                                ),
+                      return showDialog<void>(
+                        context: context,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Wallet information'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Text(
+                                    'Name: ${displayedWallet.name.toString() ?? 'unknown'}',
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                  Text(
+                                    'Id: ${displayedWallet.id ?? 'unknown'}',
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                  Text(
+                                    'Address: ${displayedWallet.mainAddress ?? 'unknown'}',
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                  Text(
+                                    'Seed: ${displayedWallet.seed ?? 'unknown'}',
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                ],
                               ),
-                              actions: <Widget>[
-                                FlatButton(
-                                  child: Text('OK'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text('OK'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                   ),
                 ],
