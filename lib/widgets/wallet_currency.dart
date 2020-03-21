@@ -1,19 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
-// import 'package:wallet/dummy_data.dart';
-
-// ##### hardcoded #####
-// 
-//  class not connected now
-// need to fix to load from the file
-//  
-// ############
-
-
 void selectCurrency(BuildContext context) {
-  
+  // TODO might need show currency description?
 }
 
 

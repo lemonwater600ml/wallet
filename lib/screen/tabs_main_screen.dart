@@ -412,7 +412,7 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
                             child: ListTile(
                               onTap: () {
                                 print(
-                                    'displayedName before tap: ${displayedName}');
+                                    'displayedName before tap: $displayedName');
 
                                 setState(() {
                                   Provider.of<Wallets>(context)

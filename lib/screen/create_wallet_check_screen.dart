@@ -14,19 +14,16 @@ class CreateWalletCheckScreen extends StatelessWidget {
   static const routeName = '/create-wallet-check';
   final _formKey = GlobalKey<FormState>();
   List<String> _mnemonicList;
-  
+
   Wallet newWallet;
   List<Wallet> wallets;
   Future<Database> database;
-  // Map<String, dynamic> walletPropertiesMap = new Map<String, dynamic>();
   List<int> _answerIndexes = [
     2,
     5,
     8,
     11
   ]; // 3 => question 1; 6 => question 2; 9 and 12 for question 3
-
-  // CreateWalletCheckScreen({@required this.walletProperties });
 
   void _writeNewWalletIntoCard() {
     // null interface
@@ -112,24 +109,6 @@ class CreateWalletCheckScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     newWallet = ModalRoute.of(context).settings.arguments;
-    // walletProperties.mnemonic = '123';
-    // print('Data get: ${ModalRoute.of(context).settings.arguments}');
-
-    // test _mnemonicList
-    // _mnemonicList = [
-    //   '-1',
-    //   '-2',
-    //   '-3',
-    //   '-4',
-    //   '-5',
-    //   '-6',
-    //   '-7',
-    //   '-8',
-    //   '-9',
-    //   '-10',
-    //   '-11',
-    //   '-12',
-    // ];
 
     _mnemonicList = newWallet.mnemonic.toString().split(' ');
     return Scaffold(
@@ -144,7 +123,6 @@ class CreateWalletCheckScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  // Text( walletPropertiesMap['walletName'], style: TextStyle(fontSize: 30), ),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: Text(
@@ -197,8 +175,6 @@ class CreateWalletCheckScreen extends StatelessWidget {
                       return null;
                     },
                   ),
-
-                  // Text('walletProperties? ${walletProperties == null}'  ),
                 ],
               ),
             )),
@@ -223,9 +199,9 @@ class CreateWalletCheckScreen extends StatelessWidget {
                 _writeNewWalletIntoCard();
                 print('In CreateWalletCheckScreen: onPressed completed');
                 var wallets = await getWallets();
-                print('In CreateWalletCheckScreen: number of wallets in db: ${wallets.length}');
+                print(
+                    'In CreateWalletCheckScreen: number of wallets in db: ${wallets.length}');
                 Provider.of<Wallets>(context).updataWallets(wallets);
-                // print('In CreateWalletCheckScreen: number of wallets in db: ${wallets.length}');
                 Navigator.popUntil(
                     context, ModalRoute.withName(TabsMainScreen.routeName));
               }

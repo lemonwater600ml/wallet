@@ -1,8 +1,3 @@
-
-import 'dart:async';
-// import 'dart:math';
-
-import 'package:bip39/bip39.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import './blue_connected_screen.dart';

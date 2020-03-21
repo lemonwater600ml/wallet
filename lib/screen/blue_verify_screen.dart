@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import './blue_screen.dart';
 import './tabs_main_screen.dart';
 
 class BlueVerifyScreen extends StatelessWidget {

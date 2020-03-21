@@ -31,8 +31,7 @@ class SendCheckScreen extends StatelessWidget {
                     onPressed: () {
                       // add transactions into provider & sqlite
                       _addTransaction(sending, minerFee, wts);
-                      
-                      // TODO wallets provider & sqlite
+                      // update wallets provider & sqlite
                       _updateWallets(sending, wallets);
                       
                       Navigator.of(context)
@@ -102,7 +101,6 @@ class SendCheckScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    var displayedWallet = Provider.of<Wallets>(context).displayedWallet();
     var sending = Provider.of<Sending>(context);
     var minerFee = Provider.of<MinerFee>(context);
     var exchangeRate = Provider.of<ExchangeRate>(context);

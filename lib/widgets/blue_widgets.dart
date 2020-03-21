@@ -35,30 +35,30 @@ class ScanResultTile extends StatelessWidget {
     }
   }
 
-  Widget _buildAdvRow(BuildContext context, String title, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(title, style: TextStyle(color: Colors.white, fontSize: 12,) ),
-          SizedBox(
-            width: 12.0,
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context)
-                  .textTheme
-                  .caption
-                  .apply(color: Colors.white),
-              softWrap: true,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildAdvRow(BuildContext context, String title, String value) {
+  //   return Padding(
+  //     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+  //     child: Row(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: <Widget>[
+  //         Text(title, style: TextStyle(color: Colors.white, fontSize: 12,) ),
+  //         SizedBox(
+  //           width: 12.0,
+  //         ),
+  //         Expanded(
+  //           child: Text(
+  //             value,
+  //             style: Theme.of(context)
+  //                 .textTheme
+  //                 .caption
+  //                 .apply(color: Colors.white),
+  //             softWrap: true,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   String getNiceHexArray(List<int> bytes) {
     return '[${bytes.map((i) => i.toRadixString(16).padLeft(2, '0')).join(', ')}]'
