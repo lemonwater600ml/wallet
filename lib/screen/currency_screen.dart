@@ -26,12 +26,12 @@ class CurrencyScreen extends StatelessWidget {
 
     final rcv = wts
         .where((t) =>
-            t.to_acc ==
+            t.toAddr ==
             displayedWallet.coinAddresses.split(" ").toList()[coinIdx])
         .toList();
     final snd = wts
         .where((t) =>
-            t.from_acc ==
+            t.fromAddr ==
             displayedWallet.coinAddresses.split(" ").toList()[coinIdx])
         .toList();
 
@@ -93,9 +93,9 @@ class CurrencyScreen extends StatelessWidget {
                             onTap: () => {},
                             leading: Icon(Icons.monetization_on),
                             title: Text(coinType),
-                            subtitle: Text(rcv[idx].from_acc.length > 6
-                                ? "${rcv[idx].from_acc.substring(0, 6)}...${rcv[idx].from_acc.substring(rcv[idx].from_acc.length - 6)}"
-                                : "${rcv[idx].from_acc}"),
+                            subtitle: Text(rcv[idx].fromAddr.length > 6
+                                ? "${rcv[idx].fromAddr.substring(0, 6)}...${rcv[idx].fromAddr.substring(rcv[idx].fromAddr.length - 6)}"
+                                : "${rcv[idx].fromAddr}"),
                             trailing: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -116,9 +116,9 @@ class CurrencyScreen extends StatelessWidget {
                             onTap: () => {},
                             leading: Icon(Icons.monetization_on),
                             title: Text(coinType),
-                            subtitle: Text(snd[idx].to_acc.length > 6
-                                ? "${snd[idx].to_acc.substring(0, 6)}...${snd[idx].to_acc.substring(rcv[idx].from_acc.length - 6)}"
-                                : "${snd[idx].to_acc}"),
+                            subtitle: Text(snd[idx].toAddr.length > 6
+                                ? "${snd[idx].toAddr.substring(0, 6)}...${snd[idx].toAddr.substring(rcv[idx].fromAddr.length - 6)}"
+                                : "${snd[idx].toAddr}"),
                             trailing: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.end,
