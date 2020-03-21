@@ -82,7 +82,7 @@ class SendCompleteScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Column(
-                      children: <Widget>[Text("Successful!"),
+                      children: <Widget>[Text("Transaction Successful!"),
                         RaisedButton(
                           color: Theme.of(context).primaryColor,
                           onPressed: () {

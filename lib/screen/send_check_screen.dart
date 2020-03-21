@@ -33,7 +33,7 @@ class SendCheckScreen extends StatelessWidget {
                       _addTransaction(sending, minerFee, wts);
                       // update wallets provider & sqlite
                       _updateWallets(sending, wallets);
-                      
+
                       Navigator.of(context)
                           .pushNamed(SendCompleteScreen.routeName);
                     },
@@ -63,8 +63,7 @@ class SendCheckScreen extends StatelessWidget {
       gasUsed: Random().nextInt(100),
       nonce: 0,
       confirmations: Random().nextInt(100),
-      tokenTransfers:
-          "dummytoken_transfers" + Random().nextInt(100).toString(),
+      tokenTransfers: "dummytoken_transfers" + Random().nextInt(100).toString(),
       input: "dummyinput" + Random().nextInt(100).toString(),
       walletId: "dummywalletId",
       coinIdx: sending.coinIdx,
@@ -78,27 +77,29 @@ class SendCheckScreen extends StatelessWidget {
     print("In SendCheckScreen: add to sql complete.");
   }
 
- 
-
   Future<void> _addTransactionIntoSqlite(WalletTransaction wt) async {
     Database db = await openDatabase(
       join(await getDatabasesPath(), 'wallets'),
     );
-    await db.insert('transactions', wt.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.insert('transactions', wt.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
 
-    }
-
-  void _updateWallets(Sending sending, Wallets wallets){
+  void _updateWallets(Sending sending, Wallets wallets) {
     wallets.reduceCoin(sending.coinIdx, sending.amount);
     _updateWalletsSqlite(sending, wallets, wallets.displayedWallet().coins);
   }
-  
-  Future<void> _updateWalletsSqlite(Sending sending, Wallets wallets, String newCoins) async {
-    Database db = await openDatabase(join(await getDatabasesPath(), 'wallets'),);
-    
-    await db.update('wallets', {'coins' : newCoins}, where: "id = ?" ,whereArgs: [wallets.displayedWallet().id]);
+
+  Future<void> _updateWalletsSqlite(
+      Sending sending, Wallets wallets, String newCoins) async {
+    Database db = await openDatabase(
+      join(await getDatabasesPath(), 'wallets'),
+    );
+
+    await db.update('wallets', {'coins': newCoins},
+        where: "id = ?", whereArgs: [wallets.displayedWallet().id]);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     var sending = Provider.of<Sending>(context);
@@ -175,10 +176,17 @@ class SendCheckScreen extends StatelessWidget {
                     child: RaisedButton(
                       color: Theme.of(context).primaryColor,
                       onPressed: () {
-                        _confirmDialog(context, sending, minerFee, wts, wallets);
+                        _confirmDialog(
+                            context, sending, minerFee, wts, wallets);
                       },
-                      child: Text('Conform',
-                          style: TextStyle(color: Colors.white)),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                              "Please check all transaction infromation is correct!"),
+                          Text('Conform',
+                              style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
