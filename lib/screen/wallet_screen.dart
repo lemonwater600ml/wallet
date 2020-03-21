@@ -1,27 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:wallet/provider/exchange_rate.dart';
-import 'package:wallet/provider/sending.dart';
-import 'package:wallet/screen/currency_screen.dart';
-
-// import '../exchangerates.dart';
-import './tabs_main_screen.dart';
-
-import '../provider/wallets.dart';
-
 import 'dart:async';
-import '../models/wallet.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../main.dart';
+import 'package:provider/provider.dart';
+import '../provider/exchange_rate.dart';
+import '../provider/sending.dart';
+import '../provider/wallets.dart';
+import '../screen/currency_screen.dart';
+import '../models/wallet.dart';
 
 /////////// Display dashboard ///////////
 // pending: overflow issue, wallet detail chart
-
 // Wallet info title: Text('${displayedWallet.mainType}-Wallet')
-//
 // Wallet info detail
-//
 // Wallet info address: Text(displayedWallet.mainAddress),
 // Wallet info sum: '\$ ${fiatValueSum(displayedWallet.coinTypes, displayedWallet.coins, exchangeRate).toString()}'),
 // ListTile coin name: Text(displayedWallet.coinTypes.split(' ')[idx]),
@@ -93,7 +84,6 @@ class _WalletScreenState extends State<WalletScreen> {
   Future<void> _updateWallet(
       BuildContext context, String tableName, Wallet newDisplayedWallet) async {
     final Database db = await database;
-    // print('newDisplayedWallet.coinTypes: ${newDisplayedWallet.coinTypes}');
     await db.update(tableName, newDisplayedWallet.toMap(),
         where: 'name = ?', whereArgs: [newDisplayedWallet.name]);
     print('_updateWallet script completed!');
@@ -115,9 +105,6 @@ class _WalletScreenState extends State<WalletScreen> {
 
   Widget build(BuildContext context) {
     var exchangeRate = Provider.of<ExchangeRate>(context);
-    // final exchangeRate = EXCHANGERATES;
-    // var displayedName;
-
     String fiatValueSum(String coinTypes, String coins, ExchangeRate exchangeRate) {
       if (coinTypes == null || coins == null || exchangeRate == null) {
         return '0';
@@ -176,21 +163,13 @@ class _WalletScreenState extends State<WalletScreen> {
                     displayedWallet.coins = displayedWallet.coins + " " + "0";
                   }
                   print('concat completed');
-                  // print(
-                  // 'displayedWallet.coinTypes: ${displayedWallet.coinTypes}');
                   await _updateWallet(context, 'wallets', displayedWallet);
                   Provider.of<Wallets>(context)
                       .updataWallets(await getWalletsFromSQLite());
                   print('_updateWallet completed');
-                  // print('======== _updateWallet after adding asset =====');
-                  // walletsStream = getWalletsStream();
                   print('In _updateWallet Befroe setState');
-
-                  // Provider.of<Wallets>(context).updataWallets(snapshot.data);
-
                   super.setState(() {});
                   Navigator.of(context).pop();
-                  // print('======== pop =====');
                 },
                 child: Text('OK'),
               )
@@ -282,7 +261,6 @@ class _WalletScreenState extends State<WalletScreen> {
                 children: <Widget>[
                   Text(
                     '\$ ${fiatValueSum(displayedWallet.coinTypes, displayedWallet.coins, exchangeRate)}',
-                    // 'tttest',
                   ),
                 ],
               ),
@@ -318,7 +296,6 @@ class _WalletScreenState extends State<WalletScreen> {
                   child: ListTile(
                     leading: Icon(Icons.attach_money),
                     title:
-                        // Text('cointype'),
                         Text(displayedWallet.coinTypes?.split(' ')[idx] ??
                             'unknow coinType'),
                     trailing: Column(

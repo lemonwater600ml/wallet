@@ -14,7 +14,7 @@ import './send_complete_screen.dart';
 class SendCheckScreen extends StatelessWidget {
   static const routeName = "/send-check-scree";
 
-  void _confirmDialog(context, sending, minerFee, wts) {
+  void _confirmDialog(context, sending, minerFee, wts, wallets) {
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -33,9 +33,7 @@ class SendCheckScreen extends StatelessWidget {
                       _addTransaction(sending, minerFee, wts);
                       
                       // TODO wallets provider & sqlite
-                      _updateWallets(wts);
-
-                      
+                      _updateWallets(sending, wallets);
                       
                       Navigator.of(context)
                           .pushNamed(SendCompleteScreen.routeName);
@@ -91,9 +89,15 @@ class SendCheckScreen extends StatelessWidget {
 
     }
 
-  void _updateWallets(wallets){
+  void _updateWallets(Sending sending, Wallets wallets){
+    wallets.reduceCoin(sending.coinIdx, sending.amount);
+    _updateWalletsSqlite(sending, wallets, wallets.displayedWallet().coins);
+  }
+  
+  Future<void> _updateWalletsSqlite(Sending sending, Wallets wallets, String newCoins) async {
+    Database db = await openDatabase(join(await getDatabasesPath(), 'wallets'),);
     
-
+    await db.update('wallets', {'coins' : newCoins}, where: "id = ?" ,whereArgs: [wallets.displayedWallet().id]);
   }
   
   @override
@@ -102,6 +106,7 @@ class SendCheckScreen extends StatelessWidget {
     var sending = Provider.of<Sending>(context);
     var minerFee = Provider.of<MinerFee>(context);
     var exchangeRate = Provider.of<ExchangeRate>(context);
+    var wallets = Provider.of<Wallets>(context);
     var wts = Provider.of<WalletTransactions>(context);
 
     return Scaffold(
@@ -172,7 +177,7 @@ class SendCheckScreen extends StatelessWidget {
                     child: RaisedButton(
                       color: Theme.of(context).primaryColor,
                       onPressed: () {
-                        _confirmDialog(context, sending, minerFee, wts);
+                        _confirmDialog(context, sending, minerFee, wts, wallets);
                       },
                       child: Text('Conform',
                           style: TextStyle(color: Colors.white)),

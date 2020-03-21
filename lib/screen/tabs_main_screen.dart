@@ -355,12 +355,12 @@ class _TabsWalletScreenState extends State<TabsMainScreen> {
     super.initState();
     if (walletsStream == null) {
       ////////////// Need to clean Dummy Data and create and empty homepage (empty wallet)
-      createDummyData().then((_) {
-        setState(() {
-          walletsStream = getWalletsStream();
-        });
-        print('In TabsScreen: createDummyData script done!');
-      });
+      // createDummyData().then((_) {
+      //   setState(() {
+      //     walletsStream = getWalletsStream();
+      //   });
+      //   print('In TabsScreen: createDummyData script done!');
+      // });
 
       setDatabasePathAndOpen('wallets').then((_) async {
         setState(() {
