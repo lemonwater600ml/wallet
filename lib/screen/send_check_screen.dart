@@ -33,7 +33,7 @@ class SendCheckScreen extends StatelessWidget {
                       _addTransaction(sending, minerFee, wts);
                       
                       // TODO wallets provider & sqlite
-                      _updateWallets();
+                      _updateWallets(wts);
 
                       // TODO debug
                       
@@ -75,9 +75,13 @@ class SendCheckScreen extends StatelessWidget {
 
     // add to provider
     wts.addWalletTransaction(wt);
+    print("In SendCheckScreen: add to provider complete.");
     // add to sqlite
     _addTransactionIntoSqlite(wt);
+    print("In SendCheckScreen: add to sql complete.");
   }
+
+ 
 
   Future<void> _addTransactionIntoSqlite(WalletTransaction wt) async {
     Database db = await openDatabase(
@@ -170,7 +174,7 @@ class SendCheckScreen extends StatelessWidget {
                       onPressed: () {
                         _confirmDialog(context, sending, minerFee, wts);
                       },
-                      child: Text('Conform ',
+                      child: Text('Conform',
                           style: TextStyle(color: Colors.white)),
                     ),
                   ),
